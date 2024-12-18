@@ -1,7 +1,11 @@
 <div *ngIf="!actionButtonClicked">
     <div>Click this button and see action:</div>
     <button class="action-button" (click)="toggleAction()">Action button</button>
-
 </div>
 
-<div *ngIf="actionButtonClicked">Action text revealed</div>
+<div *ngIf="actionButtonClicked">
+    <div>Action text revealed</div>
+    <div class="picture">
+        <img src="/assets/images/cat.png" alt="Cat Picture" />
+    </div>
+</div>
