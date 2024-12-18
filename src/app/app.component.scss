@@ -1,39 +1,77 @@
-/* Global styles */
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-  }
-  
-  button {
-    color: green;
 }
-  
-  /* Make the image responsive */
-  .picture img {
-    max-width: 100%; /* Ensures the image won't overflow its container */
-    height: auto;    /* Maintains the aspect ratio of the image */
-    display: block;  /* Prevents inline-block space */
-    margin: 0 auto;  /* Centers the image horizontally */
-  }
-  
-  /* For smaller screens, adjust text and button size */
-  @media (max-width: 600px) {
-    button {
-      font-size: 14px;
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.selector {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-button {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-button-btn {
+    margin-top: 10px;
+    color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wish-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.wish-text {}
+
+.wish-picture {
+    margin-top: 10px;
+}
+
+.wish-picture img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.content > *:first-child {
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .action-button-btn {
+        font-size: 14px;
     }
-  
-    .picture img {
-      max-width: 100%;
-      height: auto;
+
+    .wish-picture img {
+        max-width: 100%;
+        height: auto;
     }
-  }
-  
-  /* For larger screens, you may want to set different styles */
-  @media (min-width: 601px) {
-    button {
-      font-size: 18px;
+}
+
+@media (min-width: 601px) {
+    .action-button-btn {
+        font-size: 18px;
     }
-  }
-  
+}

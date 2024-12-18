@@ -1,11 +1,23 @@
-<div *ngIf="!actionButtonClicked">
-    <div>Click this button and see action:</div>
-    <button class="action-button" (click)="toggleAction()">Action button</button>
-</div>
-
-<div *ngIf="actionButtonClicked">
-    <div>Action text revealed</div>
-    <div class="picture">
-        <img src="assets/images/cat.png" alt="Cat Picture" />
+<div class="content">
+    <div *ngIf="!actionButtonClicked">
+        <div>Select your New Year Wish type:</div>
+        <div class="selector">
+            <select>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+                <option value="option4">Option 4</option>
+            </select>
+        </div>
+        <div class="action-button">
+            <button class="action-button-btn" (click)="toggleAction()">Action button</button>
+        </div>
+    </div>
+    
+    <div *ngIf="actionButtonClicked" class="wish-container">
+        <div class="wish-text">Action text revealed</div>
+        <div class="wish-picture">
+            <img src="assets/images/cat.png" alt="Cat Picture" />
+        </div>
     </div>
 </div>
