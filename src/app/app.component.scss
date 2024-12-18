@@ -42,7 +42,13 @@ body {
     flex-direction: column;
 }
 
-.wish-text {}
+.wish-explanation {
+    max-width: 500px;
+}
+
+.wish-text {
+    max-width: 500px;
+}
 
 .wish-picture {
     margin-top: 10px;
