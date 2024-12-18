@@ -1,3 +1,4 @@
+// General Layout
 html,
 body {
     margin: 0;
@@ -6,52 +7,56 @@ body {
     height: 100%;
 }
 
-.content {
+.content{
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 }
 
-.selector {
+// Reusable Styles
+.flex-center {
+    display: flex;
+}
+
+.margin-top-10 {
     margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-.action-button {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.max-width-500 {
+    max-width: 620px;
 }
 
-.action-button-btn {
-    margin-top: 10px;
-    color: green;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.wish-title {
+    text-align: left;
 }
 
-.wish-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
 
-.wish-explanation {
-    max-width: 500px;
+.wish-intro {
+    .wish-explanation {
+        @extend .margin-top-10;
+        @extend .max-width-500;
+    }
+
+    .wish-action-call,
+    .selector,
+    .action-button,
+    .action-button-btn {
+        @extend .margin-top-10;
+        @extend .flex-center;
+    }
+
+    .action-button-btn {
+        color: green;
+    }
 }
 
 .wish-text {
-    max-width: 500px;
+    @extend .max-width-500;
 }
 
 .wish-picture {
-    margin-top: 10px;
+    @extend .margin-top-10;
 }
 
 .wish-picture img {
@@ -61,18 +66,14 @@ body {
     margin: 0 auto;
 }
 
-.content > *:first-child {
-    margin-top: 10px;
+.content>*:first-child {
+    @extend .margin-top-10;
 }
 
+// Media Queries
 @media (max-width: 600px) {
     .action-button-btn {
         font-size: 14px;
-    }
-
-    .wish-picture img {
-        max-width: 100%;
-        height: auto;
     }
 }
 
