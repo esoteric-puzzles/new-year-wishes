@@ -1,0 +1,40 @@
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<div *ngIf="dataLoaded; else noApp">
+    <div class="content">
+        <div *ngIf="!actionButtonClicked" class="wish-intro">
+            <div class="wish-title">
+               {{data?.UI?.wishHeader}}
+            </div>
+            <div class="wish-explanation">
+                <p *ngFor="let text of data?.UI?.wishMainText">{{ text }}</p>
+            </div>
+            <div class="wish-action-call">{{data?.UI?.selectorActionText.va}}</div>
+            <div class="action-button">
+                <button class="action-button-btn" (click)="generateWish()">{{data?.UI?.mainActionButtonText}}</button>
+            </div>
+            <div class="wish-intro-picture">
+                <img src="assets/images/wishes/11.jpg" alt="New Year Wishes Poster" />
+            </div>
+        </div>
+
+        <div *ngIf="actionButtonClicked" class="wish-result">
+            <div class="wish-title">
+                {{generatedWish.title}}
+            </div>
+            <div class="wish-text">
+                <ng-container *ngFor="let text of generatedWish.text">
+                  <p *ngIf="text?.trim(); else addBr">{{ text }}</p>
+                  <ng-template #addBr><p class="break">   </p></ng-template>
+                </ng-container>
+              </div>
+            <div class="wish-picture">
+                <img src="assets/images/wishes/{{generatedWish.image}}.jpg" alt="Wish Picture" />
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #noApp>
+    <p>Loading...</p>
+</ng-template>
