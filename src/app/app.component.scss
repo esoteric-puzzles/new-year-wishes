@@ -7,7 +7,7 @@ body {
     height: 100%;
 }
 
-.content{
+.content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,6 +33,16 @@ body {
 
 
 .wish-intro {
+    .wish-intro-picture {
+        text-align: center;
+        margin-top: 15px;
+
+        img {
+            width: 100%;
+            max-width: 550px;
+        }
+    }
+
     .wish-explanation {
         @extend .margin-top-10;
         @extend .max-width-500;
@@ -44,6 +54,11 @@ body {
     .action-button-btn {
         @extend .margin-top-10;
         @extend .flex-center;
+    }
+
+    .action-button, .selector {
+        display: flex;
+        justify-content: center;
     }
 
     .action-button-btn {
@@ -59,7 +74,7 @@ body {
     @extend .margin-top-10;
 }
 
-.wish-picture img {
+.wish-picture img, .wish-intro-picture img {
     max-width: 100%;
     height: auto;
     display: block;
@@ -68,17 +83,4 @@ body {
 
 .content>*:first-child {
     @extend .margin-top-10;
-}
-
-// Media Queries
-@media (max-width: 600px) {
-    .action-button-btn {
-        font-size: 14px;
-    }
-}
-
-@media (min-width: 601px) {
-    .action-button-btn {
-        font-size: 18px;
-    }
 }
