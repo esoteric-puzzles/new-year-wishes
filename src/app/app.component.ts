@@ -12,7 +12,6 @@ import { LoadingService } from './services/data-loader';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  showApp = false;
   actionButtonClicked = false;
 
   constructor(
@@ -24,24 +23,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const parentUrl = document.referrer;
-    console.log('Parent URL:', parentUrl);
-
-
-
-    try {
-      const parentUrl = document.location.ancestorOrigins[0];
-      console.log('Parent URL:', parentUrl);
-    } catch (error) {
-      console.error('Cross-origin access error:', error);
-    }
-
-    try {
-      const parentUrl = window.parent.location.href;
-      console.log('Parent URL:', parentUrl);
-    } catch (error) {
-      console.error('Cross-origin access error:', error);
-    }
   }
 
   toggleAction(): void {
