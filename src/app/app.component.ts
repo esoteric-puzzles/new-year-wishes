@@ -28,6 +28,14 @@ export class AppComponent implements OnInit {
     console.log('Parent URL:', parentUrl);
 
 
+
+    try {
+      const parentUrl = window.parent.location;
+      console.log('Parent URL:', parentUrl);
+    } catch (error) {
+      console.error('Cross-origin access error:', error);
+    }
+
     try {
       const parentUrl = window.parent.location.href;
       console.log('Parent URL:', parentUrl);
