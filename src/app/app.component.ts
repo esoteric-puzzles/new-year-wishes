@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     loadingService: LoadingService
   ) {
-    loadingService.startLoading();
+    //loadingService.startLoading();
   }
 
   ngOnInit(): void {
