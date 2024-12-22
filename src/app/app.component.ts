@@ -24,11 +24,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      console.log("params", params)
-      const showParam = params['show'];
-      this.showApp = showParam === 'true';
-    });
+    const parentUrl = document.referrer;
+    console.log('Parent URL:', parentUrl);
   }
 
   toggleAction(): void {
