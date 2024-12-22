@@ -26,6 +26,14 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     const parentUrl = document.referrer;
     console.log('Parent URL:', parentUrl);
+
+
+    try {
+      const parentUrl = window.parent.location.href;
+      console.log('Parent URL:', parentUrl);
+    } catch (error) {
+      console.error('Cross-origin access error:', error);
+    }
   }
 
   toggleAction(): void {
