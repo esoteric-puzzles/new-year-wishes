@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 
 
     try {
-      const parentUrl = window.parent.location;
+      const parentUrl = document.location.ancestorOrigins[0];
       console.log('Parent URL:', parentUrl);
     } catch (error) {
       console.error('Cross-origin access error:', error);
