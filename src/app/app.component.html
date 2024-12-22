@@ -1,40 +1,50 @@
-<div class="content">
-    <div *ngIf="!actionButtonClicked"class="wish-intro">
+<div *ngIf="showApp; else noApp">
+    <div class="content">
+      <div *ngIf="!actionButtonClicked" class="wish-intro">
         <div class="wish-title">
-            <h1>Wish Title</h1>
+          <h1>Wish Title</h1>
         </div>
-        <div class="wish-explanation">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-            Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-            galley of type and scrambled it to make a type specimen book. </div>
+        <div class="wish-explanation">
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+          standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
+          a type specimen book.
+        </div>
         <div class="wish-action-call">Select your New Year Wish type:</div>
         <div class="selector">
-            <select>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-                <option value="option4">Option 4</option>
-            </select>
+          <select>
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+            <option value="option4">Option 4</option>
+          </select>
         </div>
         <div class="action-button">
-            <button class="action-button-btn" (click)="toggleAction()">Action button</button>
+          <button class="action-button-btn" (click)="toggleAction()">Action button</button>
         </div>
         <div class="wish-intro-picture">
-            <img src="assets/images/intro.png" alt="New Year Wishes Poster" />
+          <img src="assets/images/intro.png" alt="New Year Wishes Poster" />
         </div>
-    </div>
-
-    <div *ngIf="actionButtonClicked" class="wish-result">
+      </div>
+  
+      <div *ngIf="actionButtonClicked" class="wish-result">
         <div class="wish-title">
-            <h1>Wish Title</h1>
+          <h1>Wish Title</h1>
         </div>
-        <div class="wish-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of
-            type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the
-            leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the
-            release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
-            software like Aldus PageMaker including versions of Lorem Ipsum.</div>
+        <div class="wish-text">
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+          standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
+          a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+          remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
+          Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions
+          of Lorem Ipsum.
+        </div>
         <div class="wish-picture">
-            <img src="assets/images/cat.png" alt="Cat Picture" />
+          <img src="assets/images/cat.png" alt="Cat Picture" />
         </div>
+      </div>
     </div>
-</div>
+  </div>
+  <ng-template #noApp>
+    <p></p>
+  </ng-template>
+  
