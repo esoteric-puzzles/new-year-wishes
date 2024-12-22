@@ -8,6 +8,7 @@ body {
 }
 
 .content {
+    font-family: 'Didact Gothic',sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -29,8 +30,14 @@ body {
 
 .wish-title {
     text-align: left;
+    font-family: 'Papyrus-RU';
+    font-weight: 400;
+    font-style: normal;
 }
 
+.wish-intro, .wish-result {
+    max-width: 550px;
+}
 
 .wish-intro {
     .wish-intro-picture {
@@ -56,13 +63,27 @@ body {
         @extend .flex-center;
     }
 
+    .selector {
+        height: 30px;
+        text-align: center;
+    }
+
     .action-button, .selector {
         display: flex;
         justify-content: center;
     }
 
     .action-button-btn {
-        color: green;
+        color: white;
+        background-color: #EC862C;
+        font-weight: bold;
+        border: 0px;
+        height: 35px;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
     }
 }
 

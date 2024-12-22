@@ -1,55 +1,44 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<div *ngIf="dataLoaded; else noApp">
+    <div class="content">
+        <div *ngIf="!actionButtonClicked" class="wish-intro">
+            <div class="wish-title">
+                <h1>{{data?.UI?.wishHeader}}</h1>
+            </div>
+            <div class="wish-explanation">
+                <p *ngFor="let text of data?.UI?.wishMainText">{{ text }}</p>
+            </div>
+            <div class="wish-action-call">{{data?.UI?.selectorActionText.va}}</div>
+            <div class="selector">
+                <select>
+                    <option *ngFor="let option of data?.UI?.selectionOptions" [value]="option">
+                        {{ option }}
+                    </option>
+                </select>
+            </div>
+            <div class="action-button">
+                <button class="action-button-btn" (click)="generateWish()">{{data?.UI?.mainActionButtonText}}</button>
+            </div>
+            <div class="wish-intro-picture">
+                <img src="{{data?.UI?.mainImageSrc}}" alt="New Year Wishes Poster" />
+            </div>
+        </div>
 
-<div class="content">
-    <div *ngIf="!actionButtonClicked" class="wish-intro">
-        <div class="wish-title">
-            <h1>Wish Title1231</h1>
-        </div>
-        <div class="wish-explanation">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-            industry's
-            standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to
-            make
-            a type specimen book.
-        </div>
-        <div class="wish-action-call">Select your New Year Wish type:</div>
-        <div class="selector">
-            <select>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-                <option value="option4">Option 4</option>
-            </select>
-        </div>
-        <div class="action-button">
-            <button class="action-button-btn" (click)="toggleAction()">Action button</button>
-        </div>
-        <div class="wish-intro-picture">
-            <img src="assets/images/intro.png" alt="New Year Wishes Poster" />
-        </div>
-    </div>
-
-    <div *ngIf="actionButtonClicked" class="wish-result">
-        <div class="wish-title">
-            <h1>Wish Title</h1>
-        </div>
-        <div class="wish-text">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-            industry's
-            standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to
-            make
-            a type specimen book. It has survived not only five centuries, but also the leap into electronic
-            typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets
-            containing
-            Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including
-            versions
-            of Lorem Ipsum.
-        </div>
-        <div class="wish-picture">
-            <img src="assets/images/cat.png" alt="Cat Picture" />
+        <div *ngIf="actionButtonClicked" class="wish-result">
+            <div class="wish-title">
+                <h1>{{generatedWish.title}}</h1>
+            </div>
+            <div class="wish-text">
+                {{generatedWish.text}}
+            </div>
+            <div class="wish-picture">
+                <img src="{{generatedWish.image}}" alt="Wish Picture" />
+            </div>
         </div>
     </div>
 </div>
+<ng-template #noApp>
+    <p>Loading...</p>
+</ng-template>
