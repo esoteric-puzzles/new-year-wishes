@@ -7,13 +7,12 @@ import { catchError, forkJoin, map, NotFoundError, Observable } from "rxjs";
 })
 export class DataLoaderService {
     private sheetId = "11aiY7cf_RqnCpWvdxxNBg6fzpBz7RWRPgJgI8o9u7ds";
-    private sheetNames = ["UI", "Wishes"];
     private baseUrl = `https://docs.google.com/spreadsheets/d/${this.sheetId}/gviz/tq?`;
 
     constructor(public http: HttpClient) { }
 
-    startLoading(): Observable<any> {
-        const requests = this.sheetNames.map(sheetName => {
+    startLoading(sheetName: string): Observable<any> {
+        const requests = [sheetName].map(sheetName => {
             const url = `${this.baseUrl}sheet=${sheetName}`;
             return this.http.get(url, { responseType: 'text' }).pipe(
                 map(data => {

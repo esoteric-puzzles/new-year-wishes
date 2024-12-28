@@ -1,18 +1,26 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<div *ngIf="dataLoaded; else noApp">
+
+<div *ngIf="uiDataLoaded && !wishesDataLoading; else noApp">
     <div class="content">
         <div *ngIf="!actionButtonClicked && !loadingError" class="wish-intro">
             <div class="wish-title">
-                {{data?.UI?.wishHeader}}
+                {{uiData?.wishHeader}}
             </div>
             <div class="wish-explanation">
-                <p *ngFor="let text of data?.UI?.wishMainText">{{ text }}</p>
+                <p *ngFor="let text of uiData?.wishMainText">{{ text }}</p>
             </div>
             <div class="action-button">
-                <button class="action-button-btn" (click)="generateWish()">{{data?.UI?.mainActionButtonText}}</button>
+                <button class="action-button-btn" (click)="generateWish()">
+                    {{uiData?.mainActionButtonText}}
+                </button>
             </div>
+
+            <ng-template #loadingWish>
+                <div class="spinner"></div>
+            </ng-template>
+
             <div class="wish-intro-picture">
                 <img src="assets/images/wishes/11.jpg" alt="New Year Wishes Poster" />
             </div>
@@ -20,13 +28,13 @@
 
         <div *ngIf="loadingError" class="wish-intro">
             <div class="wish-explanation">
-                <p>{{ data?.UI?.dataLoadingIssue }}</p>
+                <p>{{ uiData?.dataLoadingIssue }}</p>
             </div>
         </div>
 
         <div *ngIf="actionButtonClicked" class="wish-result">
             <div class="wish-title">
-                {{data?.UI?.generatedWishTitle}}
+                {{uiData?.generatedWishTitle}}
             </div>
             <div class="wish-text">
                 <ng-container *ngFor="let text of generatedWish.text">
@@ -43,5 +51,7 @@
     </div>
 </div>
 <ng-template #noApp>
-    <div class="spinner"></div>
+    <div class="content">
+        <div class="yin-yang-spinner">☯</div>
+    </div>
 </ng-template>

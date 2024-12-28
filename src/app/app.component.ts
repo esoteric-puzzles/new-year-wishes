@@ -14,10 +14,14 @@ import { FormsModule } from '@angular/forms';
 })
 export class AppComponent implements OnInit {
   actionButtonClicked = false;
-  dataLoaded = false;
 
-  data: any = null;
+  uiDataLoaded = false;
+  uiData: any = null;
+
+
+  wishesDataLoading = false;
   generatedWish: any = null;
+
   wishImagesCount = 17;
 
   loadingError = false;
@@ -26,10 +30,14 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataLoaderService.startLoading().subscribe({
+    this.loadUiData();
+  }
+
+  loadUiData() {
+    this.dataLoaderService.startLoading("UI").subscribe({
       next: data => {
-        this.data = data;
-        this.dataLoaded = true;
+        this.uiData = data?.UI;
+        this.uiDataLoaded = true;
       },
       error: (error) => {
         this.loadingError = true;
@@ -38,18 +46,29 @@ export class AppComponent implements OnInit {
   }
 
   generateWish() {
-    const wishes = this.data.Wishes;
-    const numberOfWishes = Object.keys(this.data.Wishes)?.length;
+    this.wishesDataLoading = true;
+    this.dataLoaderService.startLoading("Wishes").subscribe({
+      next: data => {
+        this.wishesDataLoading = false;
 
-    this.actionButtonClicked = true;
+        const wishes = data.Wishes;
+        const numberOfWishes = Object.keys(data.Wishes)?.length;
 
-    const randomIndex = this.getRandomInt(numberOfWishes);
+        this.actionButtonClicked = true;
 
-    this.generatedWish = {
-      title: 'Предсказание',
-      text: Object.values(wishes)[randomIndex] as string[],
-      image: this.getRandomInt(this.wishImagesCount) + 1
-    }
+        const randomIndex = this.getRandomInt(numberOfWishes);
+
+        this.generatedWish = {
+          title: 'Предсказание',
+          text: Object.values(wishes)[randomIndex] as string[],
+          image: this.getRandomInt(this.wishImagesCount) + 1
+        }
+
+      },
+      error: (error) => {
+        this.loadingError = true;
+      }
+    });
   }
 
   getRandomInt(max) {

@@ -143,20 +143,31 @@
         transform: rotate(360deg);
     }
 }
+.yin-yang-spinner {
+    color: #3f51b5;
+    font-size: 50px;
+    display: inline-block;
+    animation: spin 1.5s infinite linear;
+    transform-origin: center;
+    transform: translate(-50%, -50%) rotate(0deg);
+}
 
-.spinner:before {
-    content: '';
-    box-sizing: border-box;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin-top: -10px;
-    margin-left: -10px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    border-top-color: #07d;
-    border-bottom-color: #07d;
-    animation: spinner .8s ease infinite;
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
