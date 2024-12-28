@@ -17,14 +17,8 @@ export class AppComponent implements OnInit {
   dataLoaded = false;
 
   data: any = null;
-
-  generatedWish: any = {
-    title: "",
-    text: "",
-    image: "",
-  };
-
-  wishImagesCount = 13;
+  generatedWish: any = null;
+  wishImagesCount = 17;
 
   constructor(private dataLoaderService: DataLoaderService) {
   }
