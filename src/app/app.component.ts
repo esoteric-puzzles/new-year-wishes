@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataLoaderService } from './services/data-loader.service';
 import { FormsModule } from '@angular/forms';
+import seedrandom from 'seedrandom';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-root',
@@ -71,7 +73,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getRandomInt(max) {
-    return Math.floor(Math.random() * max);
+  getRandomInt(max: number): number {
+    const uuid = uuidv4(); // Generate a unique UUID
+    const rng = seedrandom(uuid); // Use UUID as the seed
+    return Math.floor(rng() * max); // Generate random number within the max range
   }
 }
