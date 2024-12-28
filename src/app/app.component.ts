@@ -73,7 +73,16 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getRandomInt(max: number): number {
+  getRandomInt(max) {
+    try {
+      return this.getRandomSeedInt(max);
+    }
+    catch (e) {
+      return Math.floor(Math.random() * max);
+    }
+  }
+
+  getRandomSeedInt(max: number): number {
     const uuid = uuidv4();
     const rng = seedrandom(uuid);
     return Math.floor(rng() * max);
