@@ -20,19 +20,8 @@
   <app-root></app-root>
 
   <script>
-    // Step 2: Define an array of background images
-    const backgroundImages = [
-      'https://sphinx.vision/images/content/shcola/kurs/Teyrgiy/dao/daobg4.png',
-      'https://sphinx.vision/images/content/shcola/kurs/Teyrgiy/dao/daobg6.png',
-      'https://sphinx.vision/images/content/shcola/kurs/Teyrgiy/dao/fon2.png',
-    ];
-
-    // Step 3: Pick a random image
-    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-    const randomImage = backgroundImages[randomIndex];
-
-    // Step 4: Set the background image for the body
-    document.body.style.backgroundImage = `url(${randomImage})`;
+    const randomIndex = Math.floor(Math.random() * 4);
+    document.body.style.backgroundImage = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
   </script>
 <script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-W5PVKV4V.js" type="module"></script></body>
 
