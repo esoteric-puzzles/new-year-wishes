@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-[x: string]: any;
   actionButtonClicked = false;
   dataLoaded = false;
 
@@ -24,6 +23,8 @@ export class AppComponent implements OnInit {
     text: "",
     image: "",
   };
+
+  wishImagesCount = 13;
 
   constructor(private dataLoaderService: DataLoaderService) {
   }
@@ -41,13 +42,13 @@ export class AppComponent implements OnInit {
     const numberOfWishes = Object.keys(this.data.Wishes)?.length;
 
     this.actionButtonClicked = true;
-    
+
     const randomIndex = this.getRandomInt(numberOfWishes);
-    
+
     this.generatedWish = {
       title: 'Предсказание',
       text: Object.values(wishes)[randomIndex] as string[],
-      image: this.getRandomInt(13) + 1
+      image: this.getRandomInt(this.wishImagesCount) + 1
     }
   }
 
