@@ -20,14 +20,20 @@ export class AppComponent implements OnInit {
   generatedWish: any = null;
   wishImagesCount = 17;
 
+  loadingError = false;
+
   constructor(private dataLoaderService: DataLoaderService) {
   }
 
   ngOnInit(): void {
-    this.dataLoaderService.startLoading().subscribe(data => {
-      this.data = data;
-      this.dataLoaded = true;
-      console.log("data", data);
+    this.dataLoaderService.startLoading().subscribe({
+      next: data => {
+        this.data = data;
+        this.dataLoaded = true;
+      },
+      error: (error) => {
+        this.loadingError = true;
+      }
     });
   }
 

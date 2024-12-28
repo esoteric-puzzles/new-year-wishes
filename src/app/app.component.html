@@ -3,9 +3,9 @@
 <meta http-equiv="Expires" content="0">
 <div *ngIf="dataLoaded; else noApp">
     <div class="content">
-        <div *ngIf="!actionButtonClicked" class="wish-intro">
+        <div *ngIf="!actionButtonClicked && !loadingError" class="wish-intro">
             <div class="wish-title">
-               {{data?.UI?.wishHeader}}
+                {{data?.UI?.wishHeader}}
             </div>
             <div class="wish-explanation">
                 <p *ngFor="let text of data?.UI?.wishMainText">{{ text }}</p>
@@ -18,16 +18,24 @@
             </div>
         </div>
 
+        <div *ngIf="loadingError" class="wish-intro">
+            <div class="wish-explanation">
+                <p>{{ data?.UI?.dataLoadingIssue }}</p>
+            </div>
+        </div>
+
         <div *ngIf="actionButtonClicked" class="wish-result">
             <div class="wish-title">
                 {{data?.UI?.generatedWishTitle}}
             </div>
             <div class="wish-text">
                 <ng-container *ngFor="let text of generatedWish.text">
-                  <p *ngIf="text?.trim(); else addBr">{{ text }}</p>
-                  <ng-template #addBr><p class="break">   </p></ng-template>
+                    <p *ngIf="text?.trim(); else addBr">{{ text }}</p>
+                    <ng-template #addBr>
+                        <p class="break"> </p>
+                    </ng-template>
                 </ng-container>
-              </div>
+            </div>
             <div class="wish-picture">
                 <img src="assets/images/wishes/{{generatedWish.image}}.jpg" alt="Wish Picture" />
             </div>
@@ -35,5 +43,5 @@
     </div>
 </div>
 <ng-template #noApp>
-    <p>Loading...</p>
+    <p>{{data?.UI?.loadingText}}</p>
 </ng-template>
