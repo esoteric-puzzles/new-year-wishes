@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     this.dataLoaderService.startLoading().subscribe({
       next: data => {
         this.data = data;
-        this.dataLoaded = false;
+        this.dataLoaded = true;
       },
       error: (error) => {
         this.loadingError = true;
