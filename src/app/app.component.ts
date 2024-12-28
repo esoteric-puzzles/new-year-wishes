@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
 import { DataLoaderService } from './services/data-loader.service';
 import { FormsModule } from '@angular/forms';
 import seedrandom from 'seedrandom';
@@ -74,17 +73,29 @@ export class AppComponent implements OnInit {
   }
 
   getRandomInt(max) {
+    let random = 0;
     try {
-      return this.getRandomSeedInt(max);
+      if (window.crypto) {
+        random = this.getCryptoRandomInt(max);
+      } else {
+        random = this.getRandomSeedInt(max)
+      }
     }
     catch (e) {
-      return Math.floor(Math.random() * max);
+      random = Math.floor(Math.random() * max);
     }
+    return random;
   }
 
   getRandomSeedInt(max: number): number {
     const uuid = uuidv4();
     const rng = seedrandom(uuid);
     return Math.floor(rng() * max);
+  }
+
+  getCryptoRandomInt(max: number): number {
+    const randomArray = new Uint32Array(1);
+    window.crypto.getRandomValues(randomArray);
+    return randomArray[0] % max;
   }
 }
