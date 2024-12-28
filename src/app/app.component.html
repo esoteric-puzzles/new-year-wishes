@@ -10,7 +10,6 @@
             <div class="wish-explanation">
                 <p *ngFor="let text of data?.UI?.wishMainText">{{ text }}</p>
             </div>
-            <div class="wish-action-call">{{data?.UI?.selectorActionText.va}}</div>
             <div class="action-button">
                 <button class="action-button-btn" (click)="generateWish()">{{data?.UI?.mainActionButtonText}}</button>
             </div>
@@ -21,7 +20,7 @@
 
         <div *ngIf="actionButtonClicked" class="wish-result">
             <div class="wish-title">
-                {{generatedWish.title}}
+                {{data?.UI?.generatedWishTitle}}
             </div>
             <div class="wish-text">
                 <ng-container *ngFor="let text of generatedWish.text">
