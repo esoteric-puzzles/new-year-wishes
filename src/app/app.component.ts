@@ -72,24 +72,28 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getRandomInt(max) {
-    let random = 0;
+  getRandomInt(max: number) {
+    let random = Math.floor(Math.random() * max);
     try {
-      if (window.crypto) {
+      if (this.isCryptoSupported()) {
         random = this.getCryptoRandomInt(max);
       } else {
-        random = this.getRandomSeedInt(max)
+        random = this.getRandomSeedInt(max);
       }
-    }
-    catch (e) {
-      random = Math.floor(Math.random() * max);
+    } catch (e) {
+      console.error('Fallback to Math.random() due to error in crypto or seedrandom:', e);
     }
     return random;
   }
 
   getRandomSeedInt(max: number): number {
     const uuid = uuidv4();
-    const rng = seedrandom(uuid);
+
+    const timestamp = new Date().getTime();
+    const combinedSeed = `${uuid}-${timestamp}`;
+
+    const rng = seedrandom(combinedSeed);
+
     return Math.floor(rng() * max);
   }
 
@@ -97,5 +101,15 @@ export class AppComponent implements OnInit {
     const randomArray = new Uint32Array(1);
     window.crypto.getRandomValues(randomArray);
     return randomArray[0] % max;
+  }
+
+  isCryptoSupported(): boolean {
+    try {
+      const testArray = new Uint8Array(1);
+      window.crypto.getRandomValues(testArray); // This should not throw an error if supported
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
