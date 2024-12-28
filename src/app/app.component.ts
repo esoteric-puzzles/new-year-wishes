@@ -61,7 +61,7 @@ export class AppComponent implements OnInit {
         const randomIndex = this.getRandomInt(numberOfWishes);
 
         this.generatedWish = {
-          title: 'Предсказание',
+          title: this.uiData?.generatedWishTitle,
           text: Object.values(wishes)[randomIndex] as string[],
           image: this.getRandomInt(this.wishImagesCount) + 1
         }
@@ -74,8 +74,8 @@ export class AppComponent implements OnInit {
   }
 
   getRandomInt(max: number): number {
-    const uuid = uuidv4(); // Generate a unique UUID
-    const rng = seedrandom(uuid); // Use UUID as the seed
-    return Math.floor(rng() * max); // Generate random number within the max range
+    const uuid = uuidv4();
+    const rng = seedrandom(uuid);
+    return Math.floor(rng() * max);
   }
 }
