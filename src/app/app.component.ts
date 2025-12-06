@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DataLoaderService } from './services/data-loader.service';
@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewChecked {
   actionButtonClicked = false;
 
   uiDataLoaded = false;
@@ -27,6 +27,8 @@ export class AppComponent implements OnInit {
 
   loadingError = false;
 
+  private lastHeight = 0;
+
   constructor(private dataLoaderService: DataLoaderService) {
   }
 
@@ -34,11 +36,37 @@ export class AppComponent implements OnInit {
     this.loadUiData();
   }
 
+  ngAfterViewChecked(): void {
+    this.sendHeightToParent();
+  }
+
+  sendHeightToParent(): void {
+    const height = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
+    
+    if (height !== this.lastHeight) {
+      this.lastHeight = height;
+      // Send message to parent window
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'resize',
+          height: height
+        }, '*');
+      }
+    }
+  }
+
   loadUiData() {
     this.dataLoaderService.startLoading("UI").subscribe({
       next: data => {
         this.uiData = data?.UI;
         this.uiDataLoaded = true;
+        setTimeout(() => this.sendHeightToParent(), 100);
       },
       error: (error) => {
         this.loadingError = true;
@@ -65,6 +93,8 @@ export class AppComponent implements OnInit {
           image: this.getRandomInt(this.wishImagesCount) + 1
         }
 
+        // Wait for images to load before sending height
+        setTimeout(() => this.sendHeightToParent(), 500);
       },
       error: (error) => {
         this.loadingError = true;

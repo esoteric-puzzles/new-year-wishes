@@ -10,14 +10,24 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
-    background-size: cover;
-    position: relative;
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-body::before {
+app-root {
+    display: block;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+app-root::before {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -27,7 +37,7 @@ body::before {
     z-index: 0;
 }
 
-app-root {
+app-root > * {
     position: relative;
     z-index: 1;
 }

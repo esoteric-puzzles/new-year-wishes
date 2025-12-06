@@ -53,7 +53,21 @@
       }
     }
     
-    document.body.style.backgroundImage = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
+    // Wait for app-root to be available
+    function setBackground() {
+      const appRoot = document.querySelector('app-root');
+      if (appRoot) {
+        appRoot.style.backgroundImage = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
+      } else {
+        setTimeout(setBackground, 10);
+      }
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setBackground);
+    } else {
+      setBackground();
+    }
   </script>
 </body>
 

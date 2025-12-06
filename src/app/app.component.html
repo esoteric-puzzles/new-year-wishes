@@ -45,7 +45,9 @@
                 </ng-container>
             </div>
             <div class="wish-picture">
-                <img src="assets/images/wishes/{{generatedWish.image}}.png" alt="Wish Picture" />
+                <img src="assets/images/wishes/{{generatedWish.image}}.png" 
+                     alt="Wish Picture" 
+                     (load)="onImageLoad()" />
             </div>
         </div>
     </div>
