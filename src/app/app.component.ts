@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   wishesDataLoading = false;
   generatedWish: any = null;
 
-  wishImagesCount = 17;
+  wishImagesCount = 50;
 
   loadingError = false;
 
@@ -99,8 +99,16 @@ export class AppComponent implements OnInit {
 
   getCryptoRandomInt(max: number): number {
     const randomArray = new Uint32Array(1);
-    window.crypto.getRandomValues(randomArray);
-    return randomArray[0] % max;
+    const range = Math.floor(0xFFFFFFFF / max) * max; // Largest multiple of max
+    
+    // Rejection sampling to avoid modulo bias
+    let randomValue;
+    do {
+      window.crypto.getRandomValues(randomArray);
+      randomValue = randomArray[0];
+    } while (randomValue >= range);
+    
+    return randomValue % max;
   }
 
   isCryptoSupported(): boolean {
