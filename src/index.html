@@ -27,8 +27,32 @@
   <app-root></app-root>
 
   <script>
-    const backgroundImageCount = 4;
-    const randomIndex = Math.floor(Math.random() * backgroundImageCount);
+    const backgroundImageCount = 10;
+    let randomIndex;
+    
+    // Check for URL parameter override (for testing)
+    const urlParams = new URLSearchParams(window.location.search);
+    const bgOverride = urlParams.get('bg');
+    
+    if (bgOverride && !isNaN(bgOverride)) {
+      // Use the override value (subtract 1 since we add 1 later)
+      randomIndex = parseInt(bgOverride) - 1;
+      console.log('Background override active: ' + bgOverride);
+    } else {
+      // Try to use crypto for truly random selection
+      try {
+        if (window.crypto && window.crypto.getRandomValues) {
+          const randomArray = new Uint32Array(1);
+          window.crypto.getRandomValues(randomArray);
+          randomIndex = randomArray[0] % backgroundImageCount;
+        } else {
+          randomIndex = Math.floor(Math.random() * backgroundImageCount);
+        }
+      } catch (e) {
+        randomIndex = Math.floor(Math.random() * backgroundImageCount);
+      }
+    }
+    
     document.body.style.backgroundImage = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
   </script>
 </body>
