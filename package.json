@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "compress:png": "find src/assets -name '*.png' -exec pngquant --quality=60-80 --ext .png --force {} \\;",
+    "compress:jpg": "find src/assets -name '*.jpg' -o -name '*.jpeg' | xargs -I {} jpegoptim --max=80 --strip-all {}"
   },
   "private": true,
   "dependencies": {
