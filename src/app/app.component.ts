@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewChecked } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DataLoaderService } from './services/data-loader.service';
@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit, AfterViewChecked {
+export class AppComponent implements OnInit {
   actionButtonClicked = false;
 
   uiDataLoaded = false;
@@ -36,47 +36,11 @@ export class AppComponent implements OnInit, AfterViewChecked {
     this.loadUiData();
   }
 
-  ngAfterViewChecked(): void {
-    this.sendHeightToParent();
-  }
-
-  onImageLoad(): void {
-    setTimeout(() => this.sendHeightToParent(), 100);
-    setTimeout(() => this.sendHeightToParent(), 300);
-    setTimeout(() => this.sendHeightToParent(), 600);
-  }
-
-  sendHeightToParent(): void {
-    const height = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.clientHeight,
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-    );
-    
-    if (height > 0) {
-      this.lastHeight = height;
-      // Send message to parent window
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage({
-          type: 'resize',
-          height: height + 50 // Add extra padding
-        }, '*');
-        
-        console.log('Sending height to parent:', height + 50);
-      }
-    }
-  }
-
   loadUiData() {
     this.dataLoaderService.startLoading("UI").subscribe({
       next: data => {
         this.uiData = data?.UI;
         this.uiDataLoaded = true;
-        setTimeout(() => this.sendHeightToParent(), 200);
-        setTimeout(() => this.sendHeightToParent(), 500);
-        setTimeout(() => this.sendHeightToParent(), 1000);
       },
       error: (error) => {
         this.loadingError = true;
@@ -103,11 +67,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
           image: this.getRandomInt(this.wishImagesCount) + 1
         }
 
-        // Wait for images to load before sending height - multiple attempts
-        setTimeout(() => this.sendHeightToParent(), 200);
-        setTimeout(() => this.sendHeightToParent(), 500);
-        setTimeout(() => this.sendHeightToParent(), 1000);
-        setTimeout(() => this.sendHeightToParent(), 1500);
       },
       error: (error) => {
         this.loadingError = true;
