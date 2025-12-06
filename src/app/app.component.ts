@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DataLoaderService } from './services/data-loader.service';
@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewChecked {
   actionButtonClicked = false;
 
   uiDataLoaded = false;
@@ -35,6 +35,28 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.loadUiData();
     this.checkUrlParameters();
+  }
+
+  ngAfterViewChecked(): void {
+    this.sendHeight();
+  }
+
+  sendHeight(): void {
+    setTimeout(() => {
+      const height = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight
+      );
+      
+      if (height !== this.lastHeight && height > 0) {
+        this.lastHeight = height;
+        if (window.parent) {
+          window.parent.postMessage({ iframeHeight: height }, '*');
+        }
+      }
+    }, 0);
   }
 
   checkUrlParameters(): void {
@@ -68,6 +90,8 @@ export class AppComponent implements OnInit {
         }
         
         console.log('Testing wish:', wishIndex, 'Text length:', this.generatedWish.text.join('').length);
+        setTimeout(() => this.sendHeight(), 500);
+        setTimeout(() => this.sendHeight(), 1000);
       },
       error: (error) => {
         this.loadingError = true;
@@ -80,6 +104,7 @@ export class AppComponent implements OnInit {
       next: data => {
         this.uiData = data?.UI;
         this.uiDataLoaded = true;
+        setTimeout(() => this.sendHeight(), 500);
       },
       error: (error) => {
         this.loadingError = true;
@@ -106,6 +131,8 @@ export class AppComponent implements OnInit {
           image: this.getRandomInt(this.wishImagesCount) + 1
         }
 
+        setTimeout(() => this.sendHeight(), 500);
+        setTimeout(() => this.sendHeight(), 1000);
       },
       error: (error) => {
         this.loadingError = true;
