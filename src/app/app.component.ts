@@ -42,6 +42,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
   onImageLoad(): void {
     setTimeout(() => this.sendHeightToParent(), 100);
+    setTimeout(() => this.sendHeightToParent(), 300);
+    setTimeout(() => this.sendHeightToParent(), 600);
   }
 
   sendHeightToParent(): void {
@@ -53,14 +55,16 @@ export class AppComponent implements OnInit, AfterViewChecked {
       document.documentElement.offsetHeight
     );
     
-    if (height !== this.lastHeight) {
+    if (height > 0) {
       this.lastHeight = height;
       // Send message to parent window
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({
           type: 'resize',
-          height: height
+          height: height + 50 // Add extra padding
         }, '*');
+        
+        console.log('Sending height to parent:', height + 50);
       }
     }
   }
