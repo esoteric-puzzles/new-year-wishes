@@ -40,6 +40,10 @@ export class AppComponent implements OnInit, AfterViewChecked {
     this.sendHeightToParent();
   }
 
+  onImageLoad(): void {
+    setTimeout(() => this.sendHeightToParent(), 100);
+  }
+
   sendHeightToParent(): void {
     const height = Math.max(
       document.body.scrollHeight,
@@ -66,7 +70,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
       next: data => {
         this.uiData = data?.UI;
         this.uiDataLoaded = true;
-        setTimeout(() => this.sendHeightToParent(), 100);
+        setTimeout(() => this.sendHeightToParent(), 200);
+        setTimeout(() => this.sendHeightToParent(), 500);
+        setTimeout(() => this.sendHeightToParent(), 1000);
       },
       error: (error) => {
         this.loadingError = true;
@@ -93,8 +99,11 @@ export class AppComponent implements OnInit, AfterViewChecked {
           image: this.getRandomInt(this.wishImagesCount) + 1
         }
 
-        // Wait for images to load before sending height
+        // Wait for images to load before sending height - multiple attempts
+        setTimeout(() => this.sendHeightToParent(), 200);
         setTimeout(() => this.sendHeightToParent(), 500);
+        setTimeout(() => this.sendHeightToParent(), 1000);
+        setTimeout(() => this.sendHeightToParent(), 1500);
       },
       error: (error) => {
         this.loadingError = true;
