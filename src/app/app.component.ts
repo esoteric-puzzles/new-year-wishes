@@ -34,6 +34,45 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUiData();
+    this.checkUrlParameters();
+  }
+
+  checkUrlParameters(): void {
+    const urlParams = new URLSearchParams(window.location.search);
+    const wishOverride = urlParams.get('wish');
+    
+    if (wishOverride && !isNaN(parseInt(wishOverride))) {
+      // Auto-generate wish with specific index
+      setTimeout(() => {
+        this.generateSpecificWish(parseInt(wishOverride));
+      }, 1000);
+    }
+  }
+
+  generateSpecificWish(wishIndex: number): void {
+    this.wishesDataLoading = true;
+    this.dataLoaderService.startLoading("Wishes").subscribe({
+      next: data => {
+        this.wishesDataLoading = false;
+        const wishes = data.Wishes;
+        const numberOfWishes = Object.keys(data.Wishes)?.length;
+        
+        // Use specific wish index (1-based to 0-based)
+        const index = Math.min(Math.max(0, wishIndex - 1), numberOfWishes - 1);
+        
+        this.actionButtonClicked = true;
+        this.generatedWish = {
+          title: this.uiData?.generatedWishTitle,
+          text: Object.values(wishes)[index] as string[],
+          image: wishIndex // Use same index for image
+        }
+        
+        console.log('Testing wish:', wishIndex, 'Text length:', this.generatedWish.text.join('').length);
+      },
+      error: (error) => {
+        this.loadingError = true;
+      }
+    });
   }
 
   loadUiData() {
