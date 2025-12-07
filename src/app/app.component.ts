@@ -227,20 +227,20 @@ export class AppComponent implements OnInit, AfterViewChecked {
       return;
     }
 
-    // Базовый URL — текущий адрес (для standalone-режима)
+    // Base URL — current address (for standalone mode)
     let url = new URL(window.location.href);
 
-    // Если приложение встроено в sphinx.vision, используем URL страницы-родителя
+    // If the app is embedded in sphinx.vision, use the parent page URL
     try {
       if (document.referrer) {
         const refUrl = new URL(document.referrer);
-        // Проверяем домен sphinx.vision (или другой нужный прод-домен)
+        // Check that the domain is sphinx.vision (or another allowed production domain)
         if (refUrl.hostname.includes('sphinx.vision')) {
           url = refUrl;
         }
       }
     } catch (e) {
-      // На всякий случай игнорируем ошибки парсинга referrer
+      // Ignore referrer parsing errors and fall back to the current URL
       console.warn('Failed to use document.referrer, fallback to current URL', e);
     }
     url.searchParams.set('wish', String(this.currentWishIndex));
@@ -277,19 +277,19 @@ export class AppComponent implements OnInit, AfterViewChecked {
     this.pendingWishIndex = null;
     this.pendingImageIndex = null;
 
-    // Очистить параметры wish/img в URL без перезагрузки страницы
+    // Clear wish/img parameters in the URL without reloading the page
     const url = new URL(window.location.href);
     url.searchParams.delete('wish');
     url.searchParams.delete('img');
     window.history.replaceState(null, '', url.toString());
 
-    // Прокрутить страницу в начало
+    // Scroll the page back to the top
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
     });
 
-    // Пересчитать высоту для iframe
+    // Recalculate height for the iframe
     setTimeout(() => this.sendHeight(), 0);
   }
 
