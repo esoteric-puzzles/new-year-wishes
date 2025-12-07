@@ -227,7 +227,22 @@ export class AppComponent implements OnInit, AfterViewChecked {
       return;
     }
 
-    const url = new URL(window.location.href);
+    // Базовый URL — текущий адрес (для standalone-режима)
+    let url = new URL(window.location.href);
+
+    // Если приложение встроено в sphinx.vision, используем URL страницы-родителя
+    try {
+      if (document.referrer) {
+        const refUrl = new URL(document.referrer);
+        // Проверяем домен sphinx.vision (или другой нужный прод-домен)
+        if (refUrl.hostname.includes('sphinx.vision')) {
+          url = refUrl;
+        }
+      }
+    } catch (e) {
+      // На всякий случай игнорируем ошибки парсинга referrer
+      console.warn('Failed to use document.referrer, fallback to current URL', e);
+    }
     url.searchParams.set('wish', String(this.currentWishIndex));
 
     if (this.currentImageIndex) {
