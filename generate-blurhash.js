@@ -15,7 +15,11 @@ async function generateBlurhash(imagePath) {
   const imageData = context.getImageData(0, 0, image.width, image.height);
   const blurhash = encode(imageData.data, imageData.width, imageData.height, 4, 3);
   
-  return blurhash;
+  return {
+    hash: blurhash,
+    width: image.width,
+    height: image.height
+  };
 }
 
 async function processAllImages() {
@@ -37,9 +41,9 @@ async function processAllImages() {
     
     try {
       console.log(`Processing: ${file}...`);
-      const hash = await generateBlurhash(imagePath);
-      blurhashes[fileName] = hash;
-      console.log(`✅ ${file}: ${hash}\n`);
+      const data = await generateBlurhash(imagePath);
+      blurhashes[fileName] = data;
+      console.log(`✅ ${file}: ${data.hash} (${data.width}x${data.height})\n`);
     } catch (error) {
       console.error(`❌ Error processing ${file}:`, error.message, '\n');
     }

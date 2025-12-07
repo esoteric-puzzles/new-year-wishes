@@ -160,7 +160,16 @@ export class AppComponent implements OnInit, AfterViewChecked {
   }
 
   getBlurhash(imageName: string): string {
-    return this.blurhashes[imageName] || '';
+    const data = this.blurhashes[imageName];
+    return data?.hash || data || '';
+  }
+
+  getImageDimensions(imageName: string): { width: number, height: number } | null {
+    const data = this.blurhashes[imageName];
+    if (data?.width && data?.height) {
+      return { width: data.width, height: data.height };
+    }
+    return null;
   }
 
   getRandomInt(max: number) {

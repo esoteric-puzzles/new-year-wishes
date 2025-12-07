@@ -13,13 +13,22 @@ export class BlurhashImageComponent implements OnInit {
   @Input() src!: string;
   @Input() alt: string = '';
   @Input() blurhash!: string;
-  @Input() width: number = 32;
-  @Input() height: number = 32;
+  @Input() imageWidth?: number;  // Real image dimensions
+  @Input() imageHeight?: number; // Real image dimensions
+  @Input() width: number = 32;   // Blurhash decode resolution
+  @Input() height: number = 32;  // Blurhash decode resolution
 
   @ViewChild('blurhashCanvas', { static: false }) canvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('actualImage', { static: false }) image?: ElementRef<HTMLImageElement>;
 
   imageLoaded = false;
+  
+  get aspectRatio(): string {
+    if (this.imageWidth && this.imageHeight) {
+      return `${this.imageWidth} / ${this.imageHeight}`;
+    }
+    return 'auto';
+  }
 
   ngOnInit() {
     if (this.blurhash) {
@@ -47,13 +56,6 @@ export class BlurhashImageComponent implements OnInit {
 
   onImageLoad(event: Event) {
     this.imageLoaded = true;
-    
-    // Update container height to match loaded image to prevent jump
-    const img = event.target as HTMLImageElement;
-    const container = img.parentElement;
-    if (container) {
-      container.style.minHeight = img.offsetHeight + 'px';
-    }
   }
 }
 

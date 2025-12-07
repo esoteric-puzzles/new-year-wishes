@@ -26,6 +26,8 @@
                     src="assets/images/wishes/main.png"
                     alt="New Year Wishes Poster"
                     [blurhash]="getBlurhash('main')"
+                    [imageWidth]="getImageDimensions('main')?.width"
+                    [imageHeight]="getImageDimensions('main')?.height"
                     [width]="32"
                     [height]="32">
                 </app-blurhash-image>
@@ -55,6 +57,8 @@
                     [src]="'assets/images/wishes/' + generatedWish.image + '.png'"
                     alt="Wish Picture"
                     [blurhash]="getBlurhash(generatedWish.image.toString())"
+                    [imageWidth]="getImageDimensions(generatedWish.image.toString())?.width"
+                    [imageHeight]="getImageDimensions(generatedWish.image.toString())?.height"
                     [width]="32"
                     [height]="32">
                 </app-blurhash-image>
