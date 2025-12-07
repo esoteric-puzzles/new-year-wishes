@@ -98,6 +98,32 @@ export class AppComponent implements OnInit, AfterViewChecked {
     setTimeout(() => this.sendHeight(), 100);
   }
 
+  /**
+   * Read URL search parameters either from the current window
+   * (standalone mode) or, if empty, from the embedding page
+   * on sphinx.vision via document.referrer.
+   */
+  private getSearchParams(): URLSearchParams {
+    // Prefer own URL params when they exist
+    if (window.location.search && window.location.search.length > 1) {
+      return new URLSearchParams(window.location.search);
+    }
+
+    // Fallback: try to read params from the parent article on sphinx.vision
+    try {
+      if (document.referrer) {
+        const refUrl = new URL(document.referrer);
+        if (refUrl.hostname.includes('sphinx.vision')) {
+          return new URLSearchParams(refUrl.search);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to parse search params from referrer', e);
+    }
+
+    return new URLSearchParams();
+  }
+
   sendHeight(): void {
     setTimeout(() => {
       const height = Math.max(
@@ -117,7 +143,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
   }
 
   checkUrlParameters(): void {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = this.getSearchParams();
     const wishOverride = urlParams.get('wish');
     const imgOverride = urlParams.get('img');
     
