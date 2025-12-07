@@ -88,7 +88,7 @@ export class BlurhashImageComponent implements OnInit {
   }
 
   onImageLoad() {
-    this.imageLoaded = false;
+    this.imageLoaded = true;
   }
 }
 
