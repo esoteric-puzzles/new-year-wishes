@@ -80,6 +80,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
+    console.log('[Init] AppComponent initialized');
     this.loadUiData();
     this.checkUrlParameters();
   }
@@ -104,8 +105,12 @@ export class AppComponent implements OnInit, AfterViewChecked {
    * on sphinx.vision via document.referrer.
    */
   private getSearchParams(): URLSearchParams {
+    console.log('[URL] window.location.href:', window.location.href);
+    console.log('[URL] window.location.search:', window.location.search);
+
     // Prefer own URL params when they exist
     if (window.location.search && window.location.search.length > 1) {
+      console.log('[URL] Using search params from current window');
       return new URLSearchParams(window.location.search);
     }
 
@@ -114,13 +119,16 @@ export class AppComponent implements OnInit, AfterViewChecked {
       if (document.referrer) {
         const refUrl = new URL(document.referrer);
         if (refUrl.hostname.includes('sphinx.vision')) {
+          console.log('[URL] Using search params from sphinx.vision referrer:', refUrl.href);
           return new URLSearchParams(refUrl.search);
         }
+        console.log('[URL] Referrer is not sphinx.vision, hostname:', refUrl.hostname);
       }
     } catch (e) {
       console.warn('Failed to parse search params from referrer', e);
     }
 
+    console.log('[URL] No search params found in window or referrer');
     return new URLSearchParams();
   }
 
@@ -146,6 +154,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
     const urlParams = this.getSearchParams();
     const wishOverride = urlParams.get('wish');
     const imgOverride = urlParams.get('img');
+
+    console.log('[Deep-link] Raw params wish/img:', wishOverride, imgOverride);
     
     if (wishOverride && !isNaN(parseInt(wishOverride))) {
       const wishIndex = parseInt(wishOverride);
@@ -153,13 +163,18 @@ export class AppComponent implements OnInit, AfterViewChecked {
         ? parseInt(imgOverride)
         : undefined;
 
+      console.log('[Deep-link] Parsed wishIndex/imgIndex:', wishIndex, imgIndex);
+
       this.startWithWish = true;
       this.pendingWishIndex = wishIndex;
       this.pendingImageIndex = imgIndex ?? null;
+    } else {
+      console.log('[Deep-link] No valid wish parameter found, starting in intro mode');
     }
   }
 
   generateSpecificWish(wishIndex: number, imageIndex?: number): void {
+    console.log('[Wish] generateSpecificWish called with:', { wishIndex, imageIndex });
     this.wishesDataLoading = true;
     this.dataLoaderService.startLoading("Wishes").subscribe({
       next: data => {
@@ -172,6 +187,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
         const imgIdx = imageIndex ?? wishIndex;
 
+        console.log('[Wish] Available wishes:', numberOfWishes);
+        console.log('[Wish] Using indices (1-based wish / 1-based image):', wishIndex, imgIdx);
+
         this.currentWishIndex = wishIndex;
         this.currentImageIndex = imgIdx;
 
@@ -182,11 +200,12 @@ export class AppComponent implements OnInit, AfterViewChecked {
           image: imgIdx
         }
         
-        console.log('Testing wish:', wishIndex, 'Text length:', this.generatedWish.text.join('').length);
+        console.log('[Wish] Generated specific wish text length:', this.generatedWish.text.join('').length);
         setTimeout(() => this.sendHeight(), 500);
         setTimeout(() => this.sendHeight(), 1000);
       },
       error: (error) => {
+        console.error('[Wish] Error while loading specific wish data', error);
         this.loadingError = true;
       }
     });
@@ -215,6 +234,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
   }
 
   generateWish() {
+    console.log('[Wish] generateWish called (random mode)');
     this.wishesDataLoading = true;
     this.dataLoaderService.startLoading("Wishes").subscribe({
       next: data => {
@@ -228,6 +248,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
         const randomIndex = this.getRandomInt(numberOfWishes);  // 0-based text index
         const imageIndex = this.getRandomInt(this.wishImagesCount) + 1; // 1-based image index
 
+        console.log('[Wish] Random indices (0-based wish / 1-based image):', randomIndex, imageIndex);
+
         this.imageLoaded = false; // Reset image loaded state
 
         this.currentWishIndex = randomIndex + 1; // store as 1-based for URL
@@ -239,10 +261,13 @@ export class AppComponent implements OnInit, AfterViewChecked {
           image: imageIndex
         }
 
+        console.log('[Wish] Generated random wish text length:', this.generatedWish.text.join('').length);
+
         setTimeout(() => this.sendHeight(), 500);
         setTimeout(() => this.sendHeight(), 1000);
       },
       error: (error) => {
+        console.error('[Wish] Error while loading random wish data', error);
         this.loadingError = true;
       }
     });
@@ -250,6 +275,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
   copyProphecyLink() {
     if (!this.currentWishIndex) {
+      console.warn('[Link] copyProphecyLink called without currentWishIndex');
       return;
     }
 
@@ -264,6 +290,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
         if (refUrl.hostname.includes('sphinx.vision')) {
           // Always point to the /new-year-wishes article, regardless of where the iframe is embedded from
           url = new URL('/new-year-wishes', refUrl.origin);
+          console.log('[Link] Using sphinx.vision article as base URL:', url.toString());
         }
       }
     } catch (e) {
@@ -279,6 +306,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
     }
 
     const link = url.toString();
+    console.log('[Link] Final prophecy link:', link);
 
     const onSuccess = () => {
       this.linkCopied = true;
