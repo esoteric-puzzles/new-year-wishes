@@ -230,13 +230,14 @@ export class AppComponent implements OnInit, AfterViewChecked {
     // Base URL — current address (for standalone mode)
     let url = new URL(window.location.href);
 
-    // If the app is embedded in sphinx.vision, use the parent page URL
+    // If the app is embedded in sphinx.vision, use the article URL as base
     try {
       if (document.referrer) {
         const refUrl = new URL(document.referrer);
         // Check that the domain is sphinx.vision (or another allowed production domain)
         if (refUrl.hostname.includes('sphinx.vision')) {
-          url = refUrl;
+          // Always point to the /new-year-wishes article, regardless of where the iframe is embedded from
+          url = new URL('/new-year-wishes', refUrl.origin);
         }
       }
     } catch (e) {
