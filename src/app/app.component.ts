@@ -76,11 +76,17 @@ export class AppComponent implements OnInit, AfterViewChecked {
   private pendingWishIndex: number | null = null;
   private pendingImageIndex: number | null = null;
 
+  // Listener for messages from parent page (sphinx.vision)
+  private messageHandler = (event: MessageEvent) => {
+    this.handleParentMessage(event);
+  };
+
   constructor(private dataLoaderService: DataLoaderService) {
   }
 
   ngOnInit(): void {
     console.log('[Init] AppComponent initialized');
+    window.addEventListener('message', this.messageHandler);
     this.loadUiData();
     this.checkUrlParameters();
   }
@@ -170,6 +176,50 @@ export class AppComponent implements OnInit, AfterViewChecked {
       this.pendingImageIndex = imgIndex ?? null;
     } else {
       console.log('[Deep-link] No valid wish parameter found, starting in intro mode');
+    }
+  }
+
+  private handleParentMessage(event: MessageEvent): void {
+    console.log('[PostMessage] Received message from parent:', event.origin, event.data);
+
+    if (!event.data || !event.data.type) {
+      return;
+    }
+
+    if (event.data.type === 'setWish') {
+      const rawWish = event.data.wish;
+      const rawImg = event.data.img;
+
+      const wishIndex = parseInt(String(rawWish), 10);
+      const imgIndex = rawImg !== undefined && rawImg !== null
+        ? parseInt(String(rawImg), 10)
+        : undefined;
+
+      if (isNaN(wishIndex)) {
+        console.warn('[PostMessage] Invalid wish value in message:', rawWish);
+        return;
+      }
+
+      console.log('[PostMessage] Parsed wish/img from parent message:', wishIndex, imgIndex);
+
+      this.startWithWish = true;
+      this.pendingWishIndex = wishIndex;
+      this.pendingImageIndex = imgIndex ?? null;
+
+      if (this.uiDataLoaded) {
+        console.log('[PostMessage] UI data already loaded, generating wish immediately');
+        this.generateSpecificWish(wishIndex, imgIndex);
+      } else {
+        console.log('[PostMessage] UI data is not yet loaded, will generate wish after UI data is ready');
+      }
+    } else if (event.data.type === 'copyLinkResult') {
+      const success = !!event.data.success;
+      console.log('[PostMessage] Received copyLinkResult from parent:', success);
+
+      if (success) {
+        this.linkCopied = true;
+        setTimeout(() => (this.linkCopied = false), 2000);
+      }
     }
   }
 
@@ -279,24 +329,32 @@ export class AppComponent implements OnInit, AfterViewChecked {
       return;
     }
 
-    // Base URL — current address (for standalone mode)
-    let url = new URL(window.location.href);
+    const isEmbedded = window.parent && window.parent !== window;
 
-    // If the app is embedded in sphinx.vision, use the article URL as base
-    try {
-      if (document.referrer) {
-        const refUrl = new URL(document.referrer);
-        // Check that the domain is sphinx.vision (or another allowed production domain)
-        if (refUrl.hostname.includes('sphinx.vision')) {
-          // Always point to the /new-year-wishes article, regardless of where the iframe is embedded from
-          url = new URL('/new-year-wishes', refUrl.origin);
-          console.log('[Link] Using sphinx.vision article as base URL:', url.toString());
-        }
+    // If embedded in a parent page, delegate link construction + clipboard to the parent
+    if (isEmbedded) {
+      try {
+        window.parent.postMessage(
+          {
+            type: 'copyLink',
+            wish: this.currentWishIndex,
+            img: this.currentImageIndex
+          },
+          '*'
+        );
+        console.log('[Link] Sent copyLink message to parent', {
+          wish: this.currentWishIndex,
+          img: this.currentImageIndex
+        });
+        return;
+      } catch (e) {
+        console.warn('[Link] Failed to send copyLink message to parent, falling back to local clipboard', e);
       }
-    } catch (e) {
-      // Ignore referrer parsing errors and fall back to the current URL
-      console.warn('Failed to use document.referrer, fallback to current URL', e);
     }
+
+    // Standalone mode (or fallback if postMessage fails): build and copy link here
+    // Base URL — current address
+    let url = new URL(window.location.href);
     url.searchParams.set('wish', String(this.currentWishIndex));
 
     if (this.currentImageIndex) {
@@ -306,7 +364,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
     }
 
     const link = url.toString();
-    console.log('[Link] Final prophecy link:', link);
+    console.log('[Link] Final prophecy link (standalone/fallback):', link);
 
     const onSuccess = () => {
       this.linkCopied = true;
@@ -343,6 +401,16 @@ export class AppComponent implements OnInit, AfterViewChecked {
       top: 0,
       behavior: 'smooth'
     });
+
+    // Notify parent page (if embedded in an iframe) so it can also scroll to top
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'scrollToTop' }, '*');
+        console.log('[Scroll] Sent scrollToTop message to parent');
+      }
+    } catch (e) {
+      console.warn('[Scroll] Failed to send scrollToTop message to parent', e);
+    }
 
     // Recalculate height for the iframe
     setTimeout(() => this.sendHeight(), 0);
