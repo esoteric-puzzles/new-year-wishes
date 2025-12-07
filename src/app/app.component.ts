@@ -66,6 +66,16 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
   blurhashes: any = blurhashData;
 
+  // To be able to reconstruct a prophecy via URL
+  currentWishIndex: number | null = null;   // 1-based
+  currentImageIndex: number | null = null;  // 1-based
+  linkCopied = false;
+
+  // Deep-link params (start directly with a specific wish)
+  startWithWish = false;
+  private pendingWishIndex: number | null = null;
+  private pendingImageIndex: number | null = null;
+
   constructor(private dataLoaderService: DataLoaderService) {
   }
 
@@ -109,16 +119,21 @@ export class AppComponent implements OnInit, AfterViewChecked {
   checkUrlParameters(): void {
     const urlParams = new URLSearchParams(window.location.search);
     const wishOverride = urlParams.get('wish');
+    const imgOverride = urlParams.get('img');
     
     if (wishOverride && !isNaN(parseInt(wishOverride))) {
-      // Auto-generate wish with specific index
-      setTimeout(() => {
-        this.generateSpecificWish(parseInt(wishOverride));
-      }, 1000);
+      const wishIndex = parseInt(wishOverride);
+      const imgIndex = imgOverride && !isNaN(parseInt(imgOverride))
+        ? parseInt(imgOverride)
+        : undefined;
+
+      this.startWithWish = true;
+      this.pendingWishIndex = wishIndex;
+      this.pendingImageIndex = imgIndex ?? null;
     }
   }
 
-  generateSpecificWish(wishIndex: number): void {
+  generateSpecificWish(wishIndex: number, imageIndex?: number): void {
     this.wishesDataLoading = true;
     this.dataLoaderService.startLoading("Wishes").subscribe({
       next: data => {
@@ -128,12 +143,17 @@ export class AppComponent implements OnInit, AfterViewChecked {
         
         // Use specific wish index (1-based to 0-based)
         const index = Math.min(Math.max(0, wishIndex - 1), numberOfWishes - 1);
-        
+
+        const imgIdx = imageIndex ?? wishIndex;
+
+        this.currentWishIndex = wishIndex;
+        this.currentImageIndex = imgIdx;
+
         this.actionButtonClicked = true;
         this.generatedWish = {
           title: this.uiData?.generatedWishTitle,
           text: Object.values(wishes)[index] as string[],
-          image: wishIndex // Use same index for image
+          image: imgIdx
         }
         
         console.log('Testing wish:', wishIndex, 'Text length:', this.generatedWish.text.join('').length);
@@ -151,7 +171,16 @@ export class AppComponent implements OnInit, AfterViewChecked {
       next: data => {
         this.uiData = data?.UI;
         this.uiDataLoaded = true;
-        setTimeout(() => this.sendHeight(), 500);
+
+        // If we have deep-link params, start with that wish immediately
+        if (this.pendingWishIndex != null) {
+          this.generateSpecificWish(
+            this.pendingWishIndex,
+            this.pendingImageIndex ?? undefined
+          );
+        } else {
+          setTimeout(() => this.sendHeight(), 500);
+        }
       },
       error: (error) => {
         this.loadingError = true;
@@ -170,14 +199,18 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
         this.actionButtonClicked = true;
 
-        const randomIndex = this.getRandomInt(numberOfWishes);
+        const randomIndex = this.getRandomInt(numberOfWishes);  // 0-based text index
+        const imageIndex = this.getRandomInt(this.wishImagesCount) + 1; // 1-based image index
 
         this.imageLoaded = false; // Reset image loaded state
+
+        this.currentWishIndex = randomIndex + 1; // store as 1-based for URL
+        this.currentImageIndex = imageIndex;
 
         this.generatedWish = {
           title: this.uiData?.generatedWishTitle,
           text: Object.values(wishes)[randomIndex] as string[],
-          image: this.getRandomInt(this.wishImagesCount) + 1
+          image: imageIndex
         }
 
         setTimeout(() => this.sendHeight(), 500);
@@ -187,6 +220,62 @@ export class AppComponent implements OnInit, AfterViewChecked {
         this.loadingError = true;
       }
     });
+  }
+
+  copyProphecyLink() {
+    if (!this.currentWishIndex) {
+      return;
+    }
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('wish', String(this.currentWishIndex));
+
+    if (this.currentImageIndex) {
+      url.searchParams.set('img', String(this.currentImageIndex));
+    } else {
+      url.searchParams.delete('img');
+    }
+
+    const link = url.toString();
+
+    const onSuccess = () => {
+      this.linkCopied = true;
+      setTimeout(() => (this.linkCopied = false), 2000);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(onSuccess).catch(() => {
+        window.prompt('Скопируйте ссылку на пророчество:', link);
+      });
+    } else {
+      window.prompt('Скопируйте ссылку на пророчество:', link);
+    }
+  }
+
+  resetToStart() {
+    this.actionButtonClicked = false;
+    this.generatedWish = null;
+    this.currentWishIndex = null;
+    this.currentImageIndex = null;
+    this.linkCopied = false;
+    this.startWithWish = false;
+    this.pendingWishIndex = null;
+    this.pendingImageIndex = null;
+
+    // Очистить параметры wish/img в URL без перезагрузки страницы
+    const url = new URL(window.location.href);
+    url.searchParams.delete('wish');
+    url.searchParams.delete('img');
+    window.history.replaceState(null, '', url.toString());
+
+    // Прокрутить страницу в начало
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+    // Пересчитать высоту для iframe
+    setTimeout(() => this.sendHeight(), 0);
   }
 
   getBlurhash(imageName: string): string {

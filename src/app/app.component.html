@@ -4,7 +4,7 @@
 
 <div *ngIf="uiDataLoaded && !wishesDataLoading; else noApp">
     <div class="content" [@fadeIn]>
-        <div *ngIf="!actionButtonClicked && !loadingError" class="wish-intro" [@slideInUp]>
+        <div *ngIf="!actionButtonClicked && !loadingError && !startWithWish" class="wish-intro" [@slideInUp]>
             <div class="wish-title">
                 {{uiData?.wishHeader}}
             </div>
@@ -52,6 +52,14 @@
                     </ng-template>
                 </ng-container>
             </div>
+            <div class="action-button" style="margin-top: 20px;">
+                <button
+                    class="action-button-btn"
+                    (click)="!linkCopied && copyProphecyLink()"
+                    [disabled]="linkCopied">
+                    {{ linkCopied ? 'Ссылка скопирована' : 'Сохранить пророчество' }}
+                </button>
+            </div>
             <div class="wish-picture">
                 <app-blurhash-image
                     [src]="'assets/images/wishes/' + generatedWish.image + '.png'"
@@ -62,6 +70,11 @@
                     [width]="32"
                     [height]="32">
                 </app-blurhash-image>
+            </div>
+            <div class="action-button" style="margin-top: 12px;">
+                <button class="action-button-btn" (click)="resetToStart()">
+                    Вернуться к началу
+                </button>
             </div>
         </div>
     </div>
