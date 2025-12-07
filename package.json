@@ -15,7 +15,8 @@
     "compress:jpg": "find src/assets -name '*.jpg' -o -name '*.jpeg' | xargs -I {} jpegoptim --max=80 --strip-all {}",
     "generate:blurhash": "node generate-blurhash.js",
     "convert:webp": "node convert-to-webp.js",
-    "optimize:all": "npm run convert:webp && npm run generate:blurhash"
+    "optimize:all": "npm run convert:webp && npm run generate:blurhash",
+    "smash": "git push origin main && ng deploy --base-href=/new-year-wishes/"
   },
   "private": true,
   "dependencies": {
