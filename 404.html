@@ -17,8 +17,8 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-<style>html,body{margin:0;padding:0;width:100%;height:100%;min-height:100vh;overflow-x:hidden}body{position:relative}body:before{content:"";position:fixed;inset:0;background-image:var(--bg-image);background-size:cover;background-position:center top;background-repeat:no-repeat;background-color:#ffffff80;pointer-events:none;z-index:-1}app-root{display:block;width:100%;position:relative;min-height:100vh}
-</style><link rel="stylesheet" href="styles-XSPBGFWG.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles-XSPBGFWG.css"></noscript></head>
+<style>html,body{margin:0;padding:0;width:100%;height:auto;min-height:100vh;overflow-x:hidden}app-root{display:block;width:100%;position:relative;min-height:100vh;background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:scroll}app-root:before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background-color:#ffffff80;pointer-events:none;z-index:0}
+</style><link rel="stylesheet" href="styles-AYBBTAKE.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles-AYBBTAKE.css"></noscript></head>
 
 <body>
   <app-root></app-root>
@@ -60,17 +60,22 @@
     }
     
     const useWebP = supportsWebP();
-
+    const imageExt = useWebP ? '.webp' : '.png';
+    
+    // Wait for app-root to be available
     function setBackground() {
-      // Choose image URL
-      const imageUrl = useWebP
-        ? `url(assets/images/backgrounds/${randomIndex + 1}.webp)`
-        : `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
-
-      // Set CSS variable on body so body::before uses it
-      document.body.style.setProperty('--bg-image', imageUrl);
+      const appRoot = document.querySelector('app-root');
+      if (appRoot) {
+        // Try WebP first, fallback to PNG
+        const webpUrl = `url(assets/images/backgrounds/${randomIndex + 1}.webp)`;
+        const pngUrl = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
+        
+        appRoot.style.backgroundImage = useWebP ? webpUrl : pngUrl;
+      } else {
+        setTimeout(setBackground, 10);
+      }
     }
-
+    
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', setBackground);
     } else {
