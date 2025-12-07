@@ -6,51 +6,8 @@ import { decode } from 'blurhash';
   selector: 'app-blurhash-image',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="blurhash-container">
-      <canvas #blurhashCanvas 
-              *ngIf="!imageLoaded" 
-              class="blurhash-canvas"
-              [width]="width"
-              [height]="height">
-      </canvas>
-      <img [src]="src" 
-           [alt]="alt"
-           [class.loaded]="imageLoaded"
-           (load)="onImageLoad()"
-           class="blurhash-image">
-    </div>
-  `,
-  styles: [`
-    .blurhash-container {
-      position: relative;
-      width: 100%;
-      display: block;
-    }
-
-    .blurhash-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 5px;
-      object-fit: cover;
-    }
-
-    .blurhash-image {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 5px;
-      opacity: 0;
-      transition: opacity 0.4s ease-in-out;
-    }
-
-    .blurhash-image.loaded {
-      opacity: 1;
-    }
-  `]
+  templateUrl: './blurhash-image.component.html',
+  styleUrl: './blurhash-image.component.scss'
 })
 export class BlurhashImageComponent implements OnInit {
   @Input() src!: string;
@@ -60,6 +17,7 @@ export class BlurhashImageComponent implements OnInit {
   @Input() height: number = 32;
 
   @ViewChild('blurhashCanvas', { static: false }) canvas?: ElementRef<HTMLCanvasElement>;
+  @ViewChild('actualImage', { static: false }) image?: ElementRef<HTMLImageElement>;
 
   imageLoaded = false;
 
@@ -87,8 +45,15 @@ export class BlurhashImageComponent implements OnInit {
     }
   }
 
-  onImageLoad() {
+  onImageLoad(event: Event) {
     this.imageLoaded = true;
+    
+    // Update container height to match loaded image to prevent jump
+    const img = event.target as HTMLImageElement;
+    const container = img.parentElement;
+    if (container) {
+      container.style.minHeight = img.offsetHeight + 'px';
+    }
   }
 }
 
