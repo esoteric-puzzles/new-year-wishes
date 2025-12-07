@@ -69,7 +69,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
   // To be able to reconstruct a prophecy via URL
   currentWishIndex: number | null = null;   // 1-based
   currentImageIndex: number | null = null;  // 1-based
-  linkCopied = false;
 
   // Deep-link params (start directly with a specific wish)
   startWithWish = false;
@@ -212,14 +211,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
       } else {
         console.log('[PostMessage] UI data is not yet loaded, will generate wish after UI data is ready');
       }
-    } else if (event.data.type === 'copyLinkResult') {
-      const success = !!event.data.success;
-      console.log('[PostMessage] Received copyLinkResult from parent:', success);
-
-      if (success) {
-        this.linkCopied = true;
-        setTimeout(() => (this.linkCopied = false), 2000);
-      }
     }
   }
 
@@ -323,69 +314,11 @@ export class AppComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  copyProphecyLink() {
-    if (!this.currentWishIndex) {
-      console.warn('[Link] copyProphecyLink called without currentWishIndex');
-      return;
-    }
-
-    const isEmbedded = window.parent && window.parent !== window;
-
-    // If embedded in a parent page, delegate link construction + clipboard to the parent
-    if (isEmbedded) {
-      try {
-        window.parent.postMessage(
-          {
-            type: 'copyLink',
-            wish: this.currentWishIndex,
-            img: this.currentImageIndex
-          },
-          '*'
-        );
-        console.log('[Link] Sent copyLink message to parent', {
-          wish: this.currentWishIndex,
-          img: this.currentImageIndex
-        });
-        return;
-      } catch (e) {
-        console.warn('[Link] Failed to send copyLink message to parent, falling back to local clipboard', e);
-      }
-    }
-
-    // Standalone mode (or fallback if postMessage fails): build and copy link here
-    // Base URL — current address
-    let url = new URL(window.location.href);
-    url.searchParams.set('wish', String(this.currentWishIndex));
-
-    if (this.currentImageIndex) {
-      url.searchParams.set('img', String(this.currentImageIndex));
-    } else {
-      url.searchParams.delete('img');
-    }
-
-    const link = url.toString();
-    console.log('[Link] Final prophecy link (standalone/fallback):', link);
-
-    const onSuccess = () => {
-      this.linkCopied = true;
-      setTimeout(() => (this.linkCopied = false), 2000);
-    };
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(link).then(onSuccess).catch(() => {
-        window.prompt('Скопируйте ссылку на пророчество:', link);
-      });
-    } else {
-      window.prompt('Скопируйте ссылку на пророчество:', link);
-    }
-  }
-
   resetToStart() {
     this.actionButtonClicked = false;
     this.generatedWish = null;
     this.currentWishIndex = null;
     this.currentImageIndex = null;
-    this.linkCopied = false;
     this.startWithWish = false;
     this.pendingWishIndex = null;
     this.pendingImageIndex = null;
