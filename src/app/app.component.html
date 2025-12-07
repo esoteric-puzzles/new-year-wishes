@@ -22,7 +22,13 @@
             </ng-template>
 
             <div class="wish-intro-picture">
-                <img src="assets/images/wishes/main.png" alt="New Year Wishes Poster" />
+                <app-blurhash-image
+                    src="assets/images/wishes/main.png"
+                    alt="New Year Wishes Poster"
+                    [blurhash]="getBlurhash('main')"
+                    [width]="32"
+                    [height]="32">
+                </app-blurhash-image>
             </div>
         </div>
 
@@ -45,8 +51,13 @@
                 </ng-container>
             </div>
             <div class="wish-picture">
-                <img src="assets/images/wishes/{{generatedWish.image}}.png" 
-                     alt="Wish Picture" />
+                <app-blurhash-image
+                    [src]="'assets/images/wishes/' + generatedWish.image + '.png'"
+                    alt="Wish Picture"
+                    [blurhash]="getBlurhash(generatedWish.image.toString())"
+                    [width]="32"
+                    [height]="32">
+                </app-blurhash-image>
             </div>
         </div>
     </div>

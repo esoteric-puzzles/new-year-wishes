@@ -5,11 +5,13 @@ import { DataLoaderService } from './services/data-loader.service';
 import { FormsModule } from '@angular/forms';
 import seedrandom from 'seedrandom';
 import { v4 as uuidv4 } from 'uuid';
+import { BlurhashImageComponent } from './blurhash-image/blurhash-image.component';
+import blurhashData from '../assets/blurhash.json';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, FormsModule],
+  imports: [RouterOutlet, CommonModule, FormsModule, BlurhashImageComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -29,6 +31,11 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
   private lastHeight = 0;
 
+  imageLoaded = false;
+  introImageLoaded = false;
+
+  blurhashes: any = blurhashData;
+
   constructor(private dataLoaderService: DataLoaderService) {
   }
 
@@ -39,6 +46,16 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     this.sendHeight();
+  }
+
+  onIntroImageLoad(): void {
+    this.introImageLoaded = true;
+    setTimeout(() => this.sendHeight(), 100);
+  }
+
+  onWishImageLoad(): void {
+    this.imageLoaded = true;
+    setTimeout(() => this.sendHeight(), 100);
   }
 
   sendHeight(): void {
@@ -125,6 +142,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
         const randomIndex = this.getRandomInt(numberOfWishes);
 
+        this.imageLoaded = false; // Reset image loaded state
+
         this.generatedWish = {
           title: this.uiData?.generatedWishTitle,
           text: Object.values(wishes)[randomIndex] as string[],
@@ -138,6 +157,10 @@ export class AppComponent implements OnInit, AfterViewChecked {
         this.loadingError = true;
       }
     });
+  }
+
+  getBlurhash(imageName: string): string {
+    return this.blurhashes[imageName] || '';
   }
 
   getRandomInt(max: number) {

@@ -19,6 +19,7 @@
     "module": "ES2022",
     "noImplicitAny": false,
     "useDefineForClassFields": false,
+    "resolveJsonModule": true,
     "lib": [
       "ES2022",
       "dom"
