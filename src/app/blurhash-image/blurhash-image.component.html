@@ -5,11 +5,14 @@
           [width]="width"
           [height]="height">
   </canvas>
-  <img #actualImage
-       [src]="src" 
-       [alt]="alt"
-       [class.loaded]="imageLoaded"
-       (load)="onImageLoad($event)"
-       class="blurhash-image">
+  <picture>
+    <source [srcset]="getWebpSrc()" type="image/webp">
+    <img #actualImage
+         [src]="src" 
+         [alt]="alt"
+         [class.loaded]="imageLoaded"
+         (load)="onImageLoad($event)"
+         class="blurhash-image">
+  </picture>
 </div>
 

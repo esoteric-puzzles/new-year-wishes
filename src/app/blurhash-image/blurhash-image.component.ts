@@ -30,6 +30,11 @@ export class BlurhashImageComponent implements OnInit {
     return 'auto';
   }
 
+  getWebpSrc(): string {
+    // Convert .png to .webp
+    return this.src.replace(/\.png$/i, '.webp');
+  }
+
   ngOnInit() {
     if (this.blurhash) {
       // Decode blurhash on next tick to ensure canvas is rendered

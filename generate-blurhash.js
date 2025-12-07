@@ -27,8 +27,9 @@ async function processAllImages() {
   
   console.log('🎨 Generating blurhashes for wish images...\n');
   
+  // Only process PNG files (WebP will use the same blurhash)
   const files = fs.readdirSync(wishesDir)
-    .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'))
+    .filter(f => f.endsWith('.png'))
     .sort((a, b) => {
       const numA = parseInt(a.match(/\d+/)?.[0] || 0);
       const numB = parseInt(b.match(/\d+/)?.[0] || 0);
@@ -43,7 +44,8 @@ async function processAllImages() {
       console.log(`Processing: ${file}...`);
       const data = await generateBlurhash(imagePath);
       blurhashes[fileName] = data;
-      console.log(`✅ ${file}: ${data.hash} (${data.width}x${data.height})\n`);
+      console.log(`✅ ${file}: ${data.hash} (${data.width}x${data.height})`);
+      console.log(`   Will be used for both .png and .webp\n`);
     } catch (error) {
       console.error(`❌ Error processing ${file}:`, error.message, '\n');
     }
@@ -52,6 +54,7 @@ async function processAllImages() {
   fs.writeFileSync(outputFile, JSON.stringify(blurhashes, null, 2));
   console.log(`\n🎉 Done! Generated ${Object.keys(blurhashes).length} blurhashes`);
   console.log(`📝 Saved to: ${outputFile}`);
+  console.log(`💡 Each blurhash works for both PNG and WebP versions`);
 }
 
 processAllImages().catch(console.error);

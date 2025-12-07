@@ -5,12 +5,17 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:stats": "ng build --configuration production --stats-json",
+    "analyze": "npx webpack-bundle-analyzer dist/newyear-wishes/browser/stats.json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "compress": "node compress-images.js",
     "compress:png": "find src/assets -name '*.png' -exec pngquant --quality=60-80 --ext .png --force {} \\;",
     "compress:jpg": "find src/assets -name '*.jpg' -o -name '*.jpeg' | xargs -I {} jpegoptim --max=80 --strip-all {}",
-    "generate:blurhash": "node generate-blurhash.js"
+    "generate:blurhash": "node generate-blurhash.js",
+    "convert:webp": "node convert-to-webp.js",
+    "optimize:all": "npm run convert:webp && npm run generate:blurhash"
   },
   "private": true,
   "dependencies": {
