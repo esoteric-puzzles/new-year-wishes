@@ -3,7 +3,21 @@
     src: url('assets/fonts/hanzi.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-  }
+}
+
+@font-face {
+    font-family: 'Belepotan';
+    src: url('assets/fonts/Belepotan Rus.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Belepotan';
+    src: url('assets/fonts/Belepotan Rus Italic.otf') format('opentype');
+    font-weight: normal;
+    font-style: italic;
+}
 
 html,
 body {
@@ -38,7 +52,7 @@ app-root::before {
     z-index: 0;
 }
 
-app-root > * {
+app-root>* {
     position: relative;
     z-index: 1;
 }
