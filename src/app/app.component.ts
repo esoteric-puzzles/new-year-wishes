@@ -7,13 +7,43 @@ import seedrandom from 'seedrandom';
 import { v4 as uuidv4 } from 'uuid';
 import { BlurhashImageComponent } from './blurhash-image/blurhash-image.component';
 import blurhashData from '../assets/blurhash.json';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, CommonModule, FormsModule, BlurhashImageComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('500ms ease-in', style({ opacity: 1 }))
+      ])
+    ]),
+    trigger('slideInUp', [
+      transition(':enter', [
+        style({ 
+          opacity: 0, 
+          transform: 'translateY(30px)' 
+        }),
+        animate('600ms ease-out', style({ 
+          opacity: 1, 
+          transform: 'translateY(0)' 
+        }))
+      ])
+    ]),
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('400ms ease-in', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('400ms ease-out', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class AppComponent implements OnInit, AfterViewChecked {
   actionButtonClicked = false;

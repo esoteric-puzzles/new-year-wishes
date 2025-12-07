@@ -72,3 +72,4 @@ console.log(`\n🎉 Done! Converted ${total} images to WebP`);
 console.log('💾 Original PNG files kept as fallback');
 
 
+

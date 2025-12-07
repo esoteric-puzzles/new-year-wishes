@@ -3,8 +3,8 @@
 <meta http-equiv="Expires" content="0">
 
 <div *ngIf="uiDataLoaded && !wishesDataLoading; else noApp">
-    <div class="content">
-        <div *ngIf="!actionButtonClicked && !loadingError" class="wish-intro">
+    <div class="content" [@fadeIn]>
+        <div *ngIf="!actionButtonClicked && !loadingError" class="wish-intro" [@slideInUp]>
             <div class="wish-title">
                 {{uiData?.wishHeader}}
             </div>
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div *ngIf="actionButtonClicked" class="wish-result">
+        <div *ngIf="actionButtonClicked" class="wish-result" [@slideInUp]>
             <div class="wish-title">
                 {{uiData?.generatedWishTitle}}
             </div>
