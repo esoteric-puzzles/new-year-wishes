@@ -63,22 +63,17 @@
     }
     
     const useWebP = supportsWebP();
-    const imageExt = useWebP ? '.webp' : '.png';
-    
-    // Wait for app-root to be available
+
     function setBackground() {
-      const appRoot = document.querySelector('app-root');
-      if (appRoot) {
-        // Try WebP first, fallback to PNG
-        const webpUrl = `url(assets/images/backgrounds/${randomIndex + 1}.webp)`;
-        const pngUrl = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
-        
-        appRoot.style.backgroundImage = useWebP ? webpUrl : pngUrl;
-      } else {
-        setTimeout(setBackground, 10);
-      }
+      // Choose image URL
+      const imageUrl = useWebP
+        ? `url(assets/images/backgrounds/${randomIndex + 1}.webp)`
+        : `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
+
+      // Set CSS variable on body so body::before uses it
+      document.body.style.setProperty('--bg-image', imageUrl);
     }
-    
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', setBackground);
     } else {
