@@ -50,11 +50,27 @@
       }
     }
     
+    // Check if browser supports WebP
+    function supportsWebP() {
+      const elem = document.createElement('canvas');
+      if (!!(elem.getContext && elem.getContext('2d'))) {
+        return elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+      }
+      return false;
+    }
+    
+    const useWebP = supportsWebP();
+    const imageExt = useWebP ? '.webp' : '.png';
+    
     // Wait for app-root to be available
     function setBackground() {
       const appRoot = document.querySelector('app-root');
       if (appRoot) {
-        appRoot.style.backgroundImage = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
+        // Try WebP first, fallback to PNG
+        const webpUrl = `url(assets/images/backgrounds/${randomIndex + 1}.webp)`;
+        const pngUrl = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
+        
+        appRoot.style.backgroundImage = useWebP ? webpUrl : pngUrl;
       } else {
         setTimeout(setBackground, 10);
       }
@@ -66,6 +82,6 @@
       setBackground();
     }
   </script>
-<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-YA3SMYWJ.js" type="module"></script></body>
+<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-YFR7Q3KX.js" type="module"></script></body>
 
 </html>
