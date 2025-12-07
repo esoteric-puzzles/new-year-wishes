@@ -60,13 +60,13 @@
     background-color: #295182;
     font-family: 'Hanzi', sans-serif;
     transition: all 0.3s ease;
-    
+
     &:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(41, 81, 130, 0.4);
         background-color: #1e3a5f;
     }
-    
+
     &:active {
         transform: translateY(0);
         box-shadow: 0 2px 6px rgba(41, 81, 130, 0.3);
@@ -76,12 +76,12 @@
 .wish-intro {
     .wish-intro-picture {
         text-align: center;
-        margin-top: 40px;
+        margin-top: 60px;
     }
 
     .wish-explanation {
         margin-top: 40px;
-        margin-bottom: 40px;
+        margin-bottom: 60px;
         @extend .max-width-500;
     }
 
@@ -147,6 +147,7 @@
         transform: rotate(360deg);
     }
 }
+
 .yin-yang-spinner {
     margin-top: 40px !important;
     color: #295182;
