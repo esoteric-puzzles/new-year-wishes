@@ -26,11 +26,11 @@
   <script>
     const backgroundImageCount = 10;
     let randomIndex;
-    
+
     // Check for URL parameter override (for testing)
     const urlParams = new URLSearchParams(window.location.search);
     const bgOverride = urlParams.get('bg');
-    
+
     if (bgOverride && !isNaN(bgOverride)) {
       // Use the override value (subtract 1 since we add 1 later)
       randomIndex = parseInt(bgOverride) - 1;
@@ -49,7 +49,7 @@
         randomIndex = Math.floor(Math.random() * backgroundImageCount);
       }
     }
-    
+
     // Check if browser supports WebP
     function supportsWebP() {
       const elem = document.createElement('canvas');
@@ -58,30 +58,30 @@
       }
       return false;
     }
-    
+
     const useWebP = supportsWebP();
     const imageExt = useWebP ? '.webp' : '.png';
-    
+
     // Wait for app-root to be available
     function setBackground() {
       const appRoot = document.querySelector('app-root');
       if (appRoot) {
         // Try WebP first, fallback to PNG
-        const webpUrl = `url(assets/images/backgrounds/${randomIndex + 1}.webp)`;
+        const webpUrl = `url(assets/images/backgrounds/webp/${randomIndex + 1}.webp)`;
         const pngUrl = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
-        
+
         appRoot.style.backgroundImage = useWebP ? webpUrl : pngUrl;
       } else {
         setTimeout(setBackground, 10);
       }
     }
-    
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', setBackground);
     } else {
       setBackground();
     }
   </script>
-<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-L364Z3FX.js" type="module"></script></body>
+<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-6KS5APAU.js" type="module"></script></body>
 
 </html>
