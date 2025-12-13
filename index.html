@@ -25,15 +25,16 @@
 
   <script>
     // Default fallback
-    let backgroundImageCount = 10;
+    // Default fallback (list of IDs)
+    let backgroundImages = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
     async function initializeBackground() {
       try {
         const response = await fetch('assets/image-data.json');
         if (response.ok) {
           const data = await response.json();
-          if (data && data.backgrounds) {
-            backgroundImageCount = data.backgrounds;
+          if (data && data.backgrounds && Array.isArray(data.backgrounds)) {
+            backgroundImages = data.backgrounds;
           }
         }
       } catch (e) {
@@ -55,16 +56,17 @@
           if (window.crypto && window.crypto.getRandomValues) {
             const randomArray = new Uint32Array(1);
             window.crypto.getRandomValues(randomArray);
-            randomIndex = randomArray[0] % backgroundImageCount;
+            randomIndex = randomArray[0] % backgroundImages.length;
           } else {
-            randomIndex = Math.floor(Math.random() * backgroundImageCount);
+            randomIndex = Math.floor(Math.random() * backgroundImages.length);
           }
         } catch (e) {
-          randomIndex = Math.floor(Math.random() * backgroundImageCount);
+          randomIndex = Math.floor(Math.random() * backgroundImages.length);
         }
       }
 
-      setBackground(randomIndex);
+      const imageId = backgroundImages[randomIndex];
+      setBackground(imageId);
     }
 
     // Check if browser supports WebP
@@ -78,17 +80,17 @@
 
     const useWebP = supportsWebP();
 
-    // Set background with determined index
-    function setBackground(index) {
+    // Set background with determined ID
+    function setBackground(id) {
       const appRoot = document.querySelector('app-root');
       if (appRoot) {
         // Try WebP first, fallback to PNG
-        const webpUrl = `url(assets/images/backgrounds/webp/${index + 1}.webp)`;
-        const pngUrl = `url(assets/images/backgrounds/${index + 1}.png)`;
+        const webpUrl = `url(assets/images/backgrounds/webp/${id}.webp)`;
+        const pngUrl = `url(assets/images/backgrounds/${id}.png)`;
 
         appRoot.style.backgroundImage = useWebP ? webpUrl : pngUrl;
       } else {
-        setTimeout(() => setBackground(index), 10);
+        setTimeout(() => setBackground(id), 10);
       }
     }
 
@@ -98,6 +100,6 @@
       initializeBackground();
     }
   </script>
-<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-DA6MPZZZ.js" type="module"></script></body>
+<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-LTFZACWB.js" type="module"></script></body>
 
 </html>
