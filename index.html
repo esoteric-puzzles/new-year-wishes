@@ -24,30 +24,49 @@
   <app-root></app-root>
 
   <script>
-    const backgroundImageCount = 10;
-    let randomIndex;
+    // Default fallback
+    let backgroundImageCount = 10;
 
-    // Check for URL parameter override (for testing)
-    const urlParams = new URLSearchParams(window.location.search);
-    const bgOverride = urlParams.get('bg');
-
-    if (bgOverride && !isNaN(bgOverride)) {
-      // Use the override value (subtract 1 since we add 1 later)
-      randomIndex = parseInt(bgOverride) - 1;
-      console.log('Background override active: ' + bgOverride);
-    } else {
-      // Try to use crypto for truly random selection
+    async function initializeBackground() {
       try {
-        if (window.crypto && window.crypto.getRandomValues) {
-          const randomArray = new Uint32Array(1);
-          window.crypto.getRandomValues(randomArray);
-          randomIndex = randomArray[0] % backgroundImageCount;
-        } else {
-          randomIndex = Math.floor(Math.random() * backgroundImageCount);
+        const response = await fetch('assets/image-data.json');
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.backgrounds) {
+            backgroundImageCount = data.backgrounds;
+            console.log('Loaded background count:', backgroundImageCount);
+          }
         }
       } catch (e) {
-        randomIndex = Math.floor(Math.random() * backgroundImageCount);
+        console.warn('Could not load image-data.json, using default background count', e);
       }
+
+      let randomIndex;
+
+      // Check for URL parameter override (for testing)
+      const urlParams = new URLSearchParams(window.location.search);
+      const bgOverride = urlParams.get('bg');
+
+      if (bgOverride && !isNaN(bgOverride)) {
+        // Use the override value (subtract 1 since we add 1 later)
+        randomIndex = parseInt(bgOverride) - 1;
+        console.log('Background override active: ' + bgOverride);
+      } else {
+        // Try to use crypto for truly random selection
+        try {
+          if (window.crypto && window.crypto.getRandomValues) {
+            const randomArray = new Uint32Array(1);
+            window.crypto.getRandomValues(randomArray);
+            randomIndex = randomArray[0] % backgroundImageCount;
+          } else {
+            randomIndex = Math.floor(Math.random() * backgroundImageCount);
+          }
+        } catch (e) {
+          randomIndex = Math.floor(Math.random() * backgroundImageCount);
+        }
+      }
+
+      setBackground(randomIndex);
     }
 
     // Check if browser supports WebP
@@ -60,28 +79,27 @@
     }
 
     const useWebP = supportsWebP();
-    const imageExt = useWebP ? '.webp' : '.png';
 
-    // Wait for app-root to be available
-    function setBackground() {
+    // Set background with determined index
+    function setBackground(index) {
       const appRoot = document.querySelector('app-root');
       if (appRoot) {
         // Try WebP first, fallback to PNG
-        const webpUrl = `url(assets/images/backgrounds/webp/${randomIndex + 1}.webp)`;
-        const pngUrl = `url(assets/images/backgrounds/${randomIndex + 1}.png)`;
+        const webpUrl = `url(assets/images/backgrounds/webp/${index + 1}.webp)`;
+        const pngUrl = `url(assets/images/backgrounds/${index + 1}.png)`;
 
         appRoot.style.backgroundImage = useWebP ? webpUrl : pngUrl;
       } else {
-        setTimeout(setBackground, 10);
+        setTimeout(() => setBackground(index), 10);
       }
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', setBackground);
+      document.addEventListener('DOMContentLoaded', initializeBackground);
     } else {
-      setBackground();
+      initializeBackground();
     }
   </script>
-<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-K7HRE6K4.js" type="module"></script></body>
+<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-P5QPQZPQ.js" type="module"></script></body>
 
 </html>
