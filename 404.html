@@ -34,7 +34,6 @@
           const data = await response.json();
           if (data && data.backgrounds) {
             backgroundImageCount = data.backgrounds;
-            console.log('Loaded background count:', backgroundImageCount);
           }
         }
       } catch (e) {
@@ -50,7 +49,6 @@
       if (bgOverride && !isNaN(bgOverride)) {
         // Use the override value (subtract 1 since we add 1 later)
         randomIndex = parseInt(bgOverride) - 1;
-        console.log('Background override active: ' + bgOverride);
       } else {
         // Try to use crypto for truly random selection
         try {
@@ -100,6 +98,6 @@
       initializeBackground();
     }
   </script>
-<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-BXKPXGE7.js" type="module"></script></body>
+<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-DA6MPZZZ.js" type="module"></script></body>
 
 </html>
