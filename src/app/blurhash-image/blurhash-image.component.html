@@ -1,0 +1,6 @@
+<div class="blurhash-container" [style.aspectRatio]="aspectRatio">
+  <canvas #blurhashCanvas class="blurhash-canvas" [class.hidden]="imageLoaded" [width]="width" [height]="height">
+  </canvas>
+  <img #actualImage [src]="src" [alt]="alt" [class.loaded]="imageLoaded" (load)="onImageLoad($event)"
+    class="blurhash-image">
+</div>

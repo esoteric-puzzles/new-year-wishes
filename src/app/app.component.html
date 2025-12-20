@@ -1,0 +1,85 @@
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<div *ngIf="uiDataLoaded && !wishesDataLoading; else noApp">
+    <div class="content" [@fadeIn]>
+        <div *ngIf="!actionButtonClicked && !loadingError && !startWithWish" class="wish-intro" [@slideInUp]>
+            <div class="wish-title">
+                {{uiData?.wishHeader}}
+            </div>
+            <div class="wish-explanation">
+                <p *ngFor="let text of uiData?.wishMainText">{{ text }}</p>
+            </div>
+
+            <div class="wish-modes">
+                <div class="wish-mode-card" (click)="selectModeAndGenerate('Oracle')">
+                    <div class="wish-mode-image">
+                        <app-blurhash-image src="assets/images/wishes/webp/11.webp" alt="Oracle mode"
+                            [blurhash]="getBlurhash('11')" [imageWidth]="getImageDimensions('11')?.width"
+                            [imageHeight]="getImageDimensions('11')?.height" [width]="32" [height]="32">
+                        </app-blurhash-image>
+                    </div>
+                    <button class="wish-mode-label">
+                        ОРАКУЛ
+                    </button>
+                </div>
+
+                <div class="wish-mode-card" (click)="selectModeAndGenerate('MaxFrei')">
+                    <div class="wish-mode-image">
+                        <app-blurhash-image src="assets/images/max-freu/webp/12.webp" alt="Max Frei mode"
+                            [blurhash]="getBlurhash('max-freu/12')"
+                            [imageWidth]="getImageDimensions('max-freu/12')?.width"
+                            [imageHeight]="getImageDimensions('max-freu/12')?.height" [width]="32" [height]="32">
+                        </app-blurhash-image>
+                    </div>
+                    <button class="wish-mode-label">
+                        МАКС ФРАЙ
+                    </button>
+                </div>
+            </div>
+
+            <ng-template #loadingWish>
+                <div class="spinner"></div>
+            </ng-template>
+        </div>
+
+        <div *ngIf="loadingError" class="wish-intro">
+            <div class="wish-explanation">
+                <p>{{ uiData?.dataLoadingIssue }}</p>
+            </div>
+        </div>
+
+        <div *ngIf="actionButtonClicked" class="wish-result" [@slideInUp]>
+            <div class="wish-title" [class.max-frei]="generatedWish?.imageFolder === 'max-freu'">
+                {{uiData?.generatedWishTitle}}
+            </div>
+            <div class="wish-text" [class.max-frei]="generatedWish?.imageFolder === 'max-freu'">
+                <ng-container *ngFor="let text of generatedWish.text">
+                    <p *ngIf="text?.trim(); else addBr">{{ text }}</p>
+                    <ng-template #addBr>
+                        <p class="break"> </p>
+                    </ng-template>
+                </ng-container>
+            </div>
+            <div class="wish-picture">
+                <app-blurhash-image
+                    [src]="'assets/images/' + generatedWish.imageFolder + '/webp/' + generatedWish.image + '.webp'"
+                    alt="Wish Picture" [blurhash]="generatedWish.imageFolder === 'wishes'
+                        ? getBlurhash(generatedWish.image.toString())
+                        : ''" [imageWidth]="generatedWish.imageFolder === 'wishes'
+                        ? getImageDimensions(generatedWish.image.toString())?.width
+                        : undefined" [imageHeight]="generatedWish.imageFolder === 'wishes'
+                        ? getImageDimensions(generatedWish.image.toString())?.height
+                        : undefined" [width]="32" [height]="32">
+                </app-blurhash-image>
+            </div>
+            <!-- Back button temporarily disabled -->
+        </div>
+    </div>
+</div>
+<ng-template #noApp>
+    <div class="content">
+        <div class="yin-yang-spinner">☯</div>
+    </div>
+</ng-template>
