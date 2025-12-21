@@ -1,22 +1,17 @@
-const TABLE_HEADERS_MAP = {
+export const TABLE_HEADERS_MAP: Record<string, Record<string, string>> = {
     UI: {
-        A: 'title',
-        B: 'mainText',
-        C: 'selectorText',
-        D: 'selectionOptions',
-        E: 'actionButtonText',
-        F: 'mainImage',
+        A: 'wishHeader',
+        B: 'wishMainText',
+        C: 'oraculActionButtonText',
+        D: 'maxFreiActionButtonText',
+        E: 'generatedWishTitle'
     },
-    Category1: {
-        A: 'wishText',
-        B: 'wishImage',
+    wishes: {
+        A: 'text',
+        B: 'image',
     },
-    Category2: {
-        A: 'wishText',
-        B: 'wishImage',
-    },
-    Category3: {
-        A: 'wishText',
-        B: 'wishImage',
-    },
-}
+    'max-freu': {
+        A: 'text',
+        B: 'image',
+    }
+};
