@@ -18,7 +18,9 @@ export interface Wish {
 
 export interface UiData {
     wishHeader?: string;
-    wishMainText?: string[];
+    wishMainText?: string | string[];
+    oraculActionButtonText?: string;
+    maxFreiActionButtonText?: string;
     generatedWishTitle?: string;
     dataLoadingIssue?: string;
     [key: string]: any;

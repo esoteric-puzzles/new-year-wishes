@@ -10,12 +10,12 @@ import { MODES, ASSETS, BLURHASHES, ANIMATION_TIMINGS } from '../../shared/const
   standalone: true,
   imports: [CommonModule, BlurhashImageComponent],
   template: `
-    <div class="wish-intro" [@slideInUp]>
+      <div class="wish-intro" [@slideInUp]>
       <div class="wish-title">
         {{ uiData?.wishHeader }}
       </div>
       <div class="wish-explanation">
-        <p *ngFor="let text of uiData?.wishMainText">{{ text }}</p>
+        <p *ngFor="let text of getTextAsArray(uiData?.wishMainText)">{{ text }}</p>
       </div>
 
       <div class="wish-modes">
@@ -29,7 +29,7 @@ import { MODES, ASSETS, BLURHASHES, ANIMATION_TIMINGS } from '../../shared/const
             </app-blurhash-image>
           </div>
           <button class="wish-mode-label">
-            ОРАКУЛ
+            {{ uiData?.oraculActionButtonText}}
           </button>
         </div>
 
@@ -43,7 +43,7 @@ import { MODES, ASSETS, BLURHASHES, ANIMATION_TIMINGS } from '../../shared/const
             </app-blurhash-image>
           </div>
           <button class="wish-mode-label">
-            МАКС ФРАЙ
+             {{ uiData?.maxFreiActionButtonText}}
           </button>
         </div>
       </div>
@@ -169,5 +169,10 @@ export class IntroComponent {
 
   selectMode(mode: 'Oracle' | 'MaxFrei') {
     this.modeSelected.emit(mode);
+  }
+
+  getTextAsArray(text: string | string[] | undefined | null): string[] {
+    if (!text) return [];
+    return Array.isArray(text) ? text : [text];
   }
 }
