@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BlurhashImageComponent } from '../../blurhash-image/blurhash-image.component';
 import { UiData } from '../../services/wish.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { MODES, ASSETS, BLURHASHES, ANIMATION_TIMINGS } from '../../shared/constants';
 
 @Component({
   selector: 'app-intro',
@@ -18,10 +19,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
       </div>
 
       <div class="wish-modes">
-        <div class="wish-mode-card" (click)="selectMode('Oracle')">
+        <div class="wish-mode-card" (click)="selectMode(MODES.ORACLE)">
           <div class="wish-mode-image">
-            <app-blurhash-image src="assets/images/wishes/webp/11.webp" alt="Oracle mode"
-                                [blurhash]="'U E{?|~q00_3004n%M-;?bD%ITRj4TM{ofxt'" 
+            <app-blurhash-image [src]="ASSETS.ORACLE_INTRO_IMG" alt="Oracle mode"
+                                [blurhash]="BLURHASHES.ORACLE_INTRO" 
                                 [imageWidth]="300"
                                 [imageHeight]="300"
                                 [width]="32" [height]="32">
@@ -32,10 +33,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
           </button>
         </div>
 
-        <div class="wish-mode-card" (click)="selectMode('MaxFrei')">
+        <div class="wish-mode-card" (click)="selectMode(MODES.MAX_FREI)">
           <div class="wish-mode-image">
-            <app-blurhash-image src="assets/images/max-freu/webp/12.webp" alt="Max Frei mode"
-                                [blurhash]="'L26R|@of00R+00of?bIU00of~qRj'"
+            <app-blurhash-image [src]="ASSETS.MAX_FREI_INTRO_IMG" alt="Max Frei mode"
+                                [blurhash]="BLURHASHES.MAX_FREI_INTRO"
                                 [imageWidth]="300"
                                 [imageHeight]="300"
                                 [width]="32" [height]="32">
@@ -153,7 +154,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
     trigger('slideInUp', [
       transition(':enter', [
         style({ transform: 'translateY(30px)', opacity: 0 }),
-        animate('600ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+        animate(ANIMATION_TIMINGS.SLIDE_IN_UP, style({ transform: 'translateY(0)', opacity: 1 }))
       ])
     ])
   ]
@@ -161,6 +162,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
 export class IntroComponent {
   @Input() uiData: UiData | null | undefined = null;
   @Output() modeSelected = new EventEmitter<'Oracle' | 'MaxFrei'>();
+
+  MODES = MODES;
+  ASSETS = ASSETS;
+  BLURHASHES = BLURHASHES;
 
   selectMode(mode: 'Oracle' | 'MaxFrei') {
     this.modeSelected.emit(mode);

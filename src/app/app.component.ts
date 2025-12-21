@@ -4,6 +4,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { WishService } from './services/wish.service';
 import { IntroComponent } from './components/intro/intro.component';
 import { WishResultComponent } from './components/wish-result/wish-result.component';
+import { IFRAME_MESSAGES, MODES, DOM_EVENTS, IFRAME_TARGET_ORIGIN, ANIMATION_TIMINGS } from './shared/constants';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ import { WishResultComponent } from './components/wish-result/wish-result.compon
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('500ms ease-in', style({ opacity: 1 }))
+        animate(ANIMATION_TIMINGS.FADE_IN, style({ opacity: 1 }))
       ])
     ])
   ]
@@ -36,18 +37,18 @@ export class AppComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    window.addEventListener('message', this.messageHandler);
+    window.addEventListener(DOM_EVENTS.MESSAGE, this.messageHandler);
     this.initResizeObserver();
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('message', this.messageHandler);
+    window.removeEventListener(DOM_EVENTS.MESSAGE, this.messageHandler);
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     }
   }
 
-  onModeSelected(mode: 'Oracle' | 'MaxFrei') {
+  onModeSelected(mode: typeof MODES.ORACLE | typeof MODES.MAX_FREI) {
     this.wishService.selectMode(mode);
   }
 
@@ -80,7 +81,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (height !== this.lastHeight && height > 0) {
       this.lastHeight = height;
       if (this.document.defaultView?.parent) {
-        this.document.defaultView.parent.postMessage({ iframeHeight: height }, '*');
+        this.document.defaultView.parent.postMessage({ iframeHeight: height }, IFRAME_TARGET_ORIGIN);
       }
     }
   }
@@ -90,10 +91,10 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (event.data.type === 'scrollToTop') {
+    if (event.data.type === IFRAME_MESSAGES.SCROLL_TO_TOP) {
     }
 
-    if (event.data.type === 'setWish') {
+    if (event.data.type === IFRAME_MESSAGES.SET_WISH) {
       const rawWish = event.data.wish;
       const rawImg = event.data.img;
 

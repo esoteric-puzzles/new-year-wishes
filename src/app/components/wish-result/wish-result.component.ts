@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BlurhashImageComponent } from '../../blurhash-image/blurhash-image.component';
 import { Wish, WishService } from '../../services/wish.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { FOLDERS, ASSETS, ANIMATION_TIMINGS } from '../../shared/constants';
 
 @Component({
     selector: 'app-wish-result',
@@ -10,11 +11,11 @@ import { trigger, transition, style, animate } from '@angular/animations';
     imports: [CommonModule, BlurhashImageComponent],
     template: `
     <div class="wish-result" *ngIf="wish" [@slideInUp]>
-      <div class="wish-title" [class.max-frei]="wish.imageFolder === 'max-freu'">
+      <div class="wish-title" [class.max-frei]="wish.imageFolder === FOLDERS.MAX_FREU">
         {{ wish.title }}
       </div>
       
-      <div class="wish-text" [class.max-frei]="wish.imageFolder === 'max-freu'">
+      <div class="wish-text" [class.max-frei]="wish.imageFolder === FOLDERS.MAX_FREU">
          <ng-container *ngFor="let line of getTextAsArray(wish.text)">
              <p *ngIf="line.trim(); else addBr">{{ line }}</p>
              <ng-template #addBr>
@@ -105,7 +106,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
         trigger('slideInUp', [
             transition(':enter', [
                 style({ transform: 'translateY(30px)', opacity: 0 }),
-                animate('600ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+                animate(ANIMATION_TIMINGS.SLIDE_IN_UP, style({ transform: 'translateY(0)', opacity: 1 }))
             ])
         ])
     ]
@@ -113,6 +114,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 export class WishResultComponent {
     @Input({ required: true }) wish!: Wish;
 
+    FOLDERS = FOLDERS;
     private wishService = inject(WishService);
 
     getTextAsArray(text: string | string[]): string[] {
@@ -120,24 +122,24 @@ export class WishResultComponent {
     }
 
     getImageUrl(): string {
-        return `assets/images/${this.wish.imageFolder}/webp/${this.wish.image}.webp`;
+        return `${ASSETS.BASE_PATH}${this.wish.imageFolder}/webp/${this.wish.image}.webp`;
     }
 
     getBlurhash(): string {
-        if (this.wish.imageFolder === 'wishes') {
+        if (this.wish.imageFolder === FOLDERS.WISHES) {
             return this.wishService.getBlurhash(String(this.wish.image));
         }
 
-        if (this.wish.imageFolder === 'max-freu') {
-            return this.wishService.getBlurhash(`max-freu/${this.wish.image}`);
+        if (this.wish.imageFolder === FOLDERS.MAX_FREU) {
+            return this.wishService.getBlurhash(`${FOLDERS.MAX_FREU}/${this.wish.image}`);
         }
         return this.wishService.getBlurhash(String(this.wish.image));
     }
 
     getImageDims() {
         let key = String(this.wish.image);
-        if (this.wish.imageFolder === 'max-freu') {
-            key = `max-freu/${this.wish.image}`;
+        if (this.wish.imageFolder === FOLDERS.MAX_FREU) {
+            key = `${FOLDERS.MAX_FREU}/${this.wish.image}`;
         }
         return this.wishService.getImageDimensions(key);
     }

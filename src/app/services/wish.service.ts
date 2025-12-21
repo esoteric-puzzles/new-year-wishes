@@ -7,12 +7,13 @@ import seedrandom from 'seedrandom';
 import { v4 as uuidv4 } from 'uuid';
 import imageCounts from '../../assets/image-data.json';
 import blurhashData from '../../assets/blurhash.json';
+import { MODES, FOLDERS, UI, URL_PARAMS, LOG_MESSAGES } from '../shared/constants';
 
 export interface Wish {
     title?: string;
     text: string | string[];
     image: string | number;
-    imageFolder: 'wishes' | 'max-freu';
+    imageFolder: typeof FOLDERS.WISHES | typeof FOLDERS.MAX_FREU;
 }
 
 export interface UiData {
@@ -31,7 +32,7 @@ export class WishService {
     private _generatedWish = signal<Wish | null>(null);
     private _loading = signal<boolean>(false);
     private _error = signal<boolean>(false);
-    private _mode = signal<'Oracle' | 'MaxFrei'>('Oracle');
+    private _mode = signal<typeof MODES.ORACLE | typeof MODES.MAX_FREI>(MODES.ORACLE);
 
     readonly uiData = this._uiData.asReadonly();
     readonly generatedWish = this._generatedWish.asReadonly();
@@ -41,8 +42,8 @@ export class WishService {
 
     readonly hasWish = computed(() => !!this._generatedWish());
 
-    private oracleImages: string[] = imageCounts.wishes;
-    private maxFreiImages: string[] = imageCounts["max-freu"];
+    private oracleImages: string[] = imageCounts[FOLDERS.WISHES];
+    private maxFreiImages: string[] = imageCounts[FOLDERS.MAX_FREU];
     private blurhashes: any = blurhashData;
 
     private dataLoader = inject(DataLoaderService);
@@ -57,22 +58,22 @@ export class WishService {
 
     loadUiData() {
         this._loading.set(true);
-        this.dataLoader.startLoading("UI")
+        this.dataLoader.startLoading(UI.SHEET_NAME)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (data) => {
-                    this._uiData.set(data?.['UI']);
+                    this._uiData.set(data?.[UI.SHEET_NAME]);
                     this._loading.set(false);
                 },
                 error: (err) => {
-                    console.error("Failed to load UI data", err);
+                    console.error(LOG_MESSAGES.UI_DATA_LOAD_ERROR, err);
                     this._error.set(true);
                     this._loading.set(false);
                 }
             });
     }
 
-    selectMode(mode: 'Oracle' | 'MaxFrei') {
+    selectMode(mode: typeof MODES.ORACLE | typeof MODES.MAX_FREI) {
         this._mode.set(mode);
         this.generateWish();
     }
@@ -97,23 +98,23 @@ export class WishService {
                     }
 
                     const randomIndex = this.getRandomInt(wishesArray.length);
-                    const imagesPool = currentMode === 'MaxFrei' ? this.maxFreiImages : this.oracleImages;
+                    const imagesPool = currentMode === MODES.MAX_FREI ? this.maxFreiImages : this.oracleImages;
                     const randomImageIndex = this.getRandomInt(imagesPool.length);
                     const imageId = imagesPool[randomImageIndex];
-                    const imageFolder = currentMode === 'MaxFrei' ? 'max-freu' : 'wishes';
+                    const imageFolder = currentMode === MODES.MAX_FREI ? FOLDERS.MAX_FREU : FOLDERS.WISHES;
 
                     const newWish: Wish = {
                         title: this._uiData()?.generatedWishTitle,
                         text: wishesArray[randomIndex],
                         image: imageId,
-                        imageFolder: imageFolder as 'wishes' | 'max-freu'
+                        imageFolder: imageFolder
                     };
 
                     this._generatedWish.set(newWish);
                     this._loading.set(false);
                 },
                 error: (err) => {
-                    console.error('[WishService] Error generating wish', err);
+                    console.error(LOG_MESSAGES.GENERATE_WISH_ERROR, err);
                     this._error.set(true);
                     this._loading.set(false);
                 }
@@ -141,20 +142,20 @@ export class WishService {
                     const index = Math.min(Math.max(0, wishIndex - 1), wishesArray.length - 1);
                     const imgIdx = imageIndex ?? wishIndex;
 
-                    const imageFolder = currentMode === 'MaxFrei' ? 'max-freu' : 'wishes';
+                    const imageFolder = currentMode === MODES.MAX_FREI ? FOLDERS.MAX_FREU : FOLDERS.WISHES;
 
                     const newWish: Wish = {
                         title: this._uiData()?.generatedWishTitle,
                         text: wishesArray[index],
                         image: imgIdx,
-                        imageFolder: imageFolder as 'wishes' | 'max-freu'
+                        imageFolder: imageFolder
                     };
 
                     this._generatedWish.set(newWish);
                     this._loading.set(false);
                 },
                 error: (err) => {
-                    console.error('[WishService] Error loading specific wish', err);
+                    console.error(LOG_MESSAGES.LOAD_SPECIFIC_WISH_ERROR, err);
                     this._error.set(true);
                     this._loading.set(false);
                 }
@@ -166,7 +167,7 @@ export class WishService {
         this._error.set(false);
         this.router.navigate([], {
             relativeTo: this.route,
-            queryParams: { wish: null, img: null },
+            queryParams: { [URL_PARAMS.WISH]: null, [URL_PARAMS.IMG]: null },
             queryParamsHandling: 'merge',
             replaceUrl: true
         });
@@ -207,7 +208,7 @@ export class WishService {
                 random = this.getRandomSeedInt(max);
             }
         } catch (e) {
-            console.error('Fallback to Math.random()', e);
+            console.error(LOG_MESSAGES.MATH_RANDOM_FALLBACK, e);
         }
         return random;
     }
