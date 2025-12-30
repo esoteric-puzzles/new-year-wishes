@@ -81,6 +81,7 @@ import { FOLDERS, ASSETS, ANIMATION_TIMINGS } from '../../shared/constants';
 
     .wish-text.max-frei {
         font-family: 'Barkentina', cursive;
+        font-size: 1.3em;
     }
 
     .wish-picture {
