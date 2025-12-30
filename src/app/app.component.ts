@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, inject, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, inject, Inject, effect } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { WishService } from './services/wish.service';
@@ -34,7 +34,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(DOCUMENT) private document: Document
-  ) { }
+  ) {
+    effect(() => {
+      const wish = this.wishService.generatedWish();
+      if (wish) {
+        this.sendScrollToTop();
+      }
+    });
+  }
 
   ngOnInit(): void {
     window.addEventListener(DOM_EVENTS.MESSAGE, this.messageHandler);
@@ -83,6 +90,12 @@ export class AppComponent implements OnInit, OnDestroy {
       if (this.document.defaultView?.parent) {
         this.document.defaultView.parent.postMessage({ iframeHeight: height }, IFRAME_TARGET_ORIGIN);
       }
+    }
+  }
+
+  private sendScrollToTop(): void {
+    if (this.document.defaultView?.parent) {
+      this.document.defaultView.parent.postMessage({ type: IFRAME_MESSAGES.SCROLL_TO_TOP }, IFRAME_TARGET_ORIGIN);
     }
   }
 
