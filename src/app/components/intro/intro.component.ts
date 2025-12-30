@@ -15,6 +15,10 @@ import { MODES, ASSETS, BLURHASHES, ANIMATION_TIMINGS } from '../../shared/const
         {{ uiData?.wishHeader }}
       </div>
 
+      <div class="wish-explanation">
+        <p *ngFor="let text of getTextAsArray(uiData?.wishMainText)">{{ text }}</p>
+      </div>
+
       <div class="wish-modes">
         <div class="wish-mode-card" (click)="selectMode(MODES.ORACLE)">
           <div class="wish-mode-image">
@@ -44,8 +48,9 @@ import { MODES, ASSETS, BLURHASHES, ANIMATION_TIMINGS } from '../../shared/const
           </button>
         </div>
       </div>
+
       <div class="wish-explanation">
-        <p *ngFor="let text of getTextAsArray(uiData?.wishMainText)">{{ text }}</p>
+        <p *ngFor="let text of getTextAsArray(uiData?.wishMainTextSecondary)">{{ text }}</p>
       </div>
     </div>
   `,
@@ -71,7 +76,7 @@ import { MODES, ASSETS, BLURHASHES, ANIMATION_TIMINGS } from '../../shared/const
 
     .wish-explanation {
         margin-top: 40px;
-        margin-bottom: 60px;
+        margin-bottom: 20px;
         max-width: 620px;
         font-family: 'Belepotan', sans-serif;
         text-align: center;
@@ -89,6 +94,7 @@ import { MODES, ASSETS, BLURHASHES, ANIMATION_TIMINGS } from '../../shared/const
         gap: 32px;
         margin-top: 32px;
         flex-wrap: wrap;
+        margin-bottom: 10px;
     }
 
     .wish-mode-card {
