@@ -49,6 +49,10 @@ export class WishService {
     private maxFreiImages: string[] = imageCounts[FOLDERS.MAX_FREU];
     private blurhashes: any = blurhashData;
 
+    private availableOracleIndices: number[] = [];
+    private availableMaxFreiIndices: number[] = [];
+
+    // existing properties...
     private dataLoader = inject(DataLoaderService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
@@ -102,7 +106,7 @@ export class WishService {
 
                     const randomIndex = this.getRandomInt(wishesArray.length);
                     const imagesPool = currentMode === MODES.MAX_FREI ? this.maxFreiImages : this.oracleImages;
-                    const randomImageIndex = this.getRandomInt(imagesPool.length);
+                    const randomImageIndex = this.getNextImageIndex(currentMode, imagesPool.length);
                     const imageId = imagesPool[randomImageIndex];
                     const imageFolder = currentMode === MODES.MAX_FREI ? FOLDERS.MAX_FREU : FOLDERS.WISHES;
 
@@ -122,6 +126,30 @@ export class WishService {
                     this._loading.set(false);
                 }
             });
+    }
+
+    private getNextImageIndex(mode: string, totalImages: number): number {
+        const isMaxFrei = mode === MODES.MAX_FREI;
+        let availableIndices = isMaxFrei ? this.availableMaxFreiIndices : this.availableOracleIndices;
+
+        if (availableIndices.length === 0) {
+            // Refill
+            availableIndices = Array.from({ length: totalImages }, (_, i) => i);
+            // Shuffle using Fisher-Yates
+            for (let i = availableIndices.length - 1; i > 0; i--) {
+                const j = this.getRandomInt(i + 1);
+                [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
+            }
+
+            // Assign back to class property
+            if (isMaxFrei) {
+                this.availableMaxFreiIndices = availableIndices;
+            } else {
+                this.availableOracleIndices = availableIndices;
+            }
+        }
+
+        return availableIndices.pop()!;
     }
 
     generateSpecificWish(wishIndex: number, imageIndex?: number) {
